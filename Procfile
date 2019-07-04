@@ -1,1 +1,1 @@
-worker: python discordbotkvakep.py
+web: discordbotkvakep.py
