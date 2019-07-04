@@ -1,1 +1,1 @@
-worker: discordbotkvakep.py
+worker: python discordbotkvakep.py
