@@ -891,9 +891,12 @@ async def on_message(message):
         except:
             await message.channel.send('Вебхуки не найдены!', delete_after = 15)
         try:
-            author = message.guild.get_member(int(msg[1]))
+            author = msg[1].replace('<', '')
+            author = msg[1].replace('>', '')
+            author = msg[1].replace('@', '')
+            author = message.guild.get_member(int(author))
         except:
-            await message.channel.send('Используйте: -webhookas [author] [message]', delete_after = 15)
+            await message.channel.send('Используйте: -writeas [author] [message]', delete_after = 15)
             return
         webhook = discord.Webhook.partial(
             id = webid,
