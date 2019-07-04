@@ -12,7 +12,7 @@ pokemonphoto = {'bulbasaur':'https://pokemongolife.ru/p/Bulbasaur.png','ivysaur'
 
 evslist = {'hp': 'Nidoran♀, Slowpoke, Grimer, Vaporeon, Marill, Phanpy', 'atk': 'Ekans, Nidoran♂, Machop, Krabby, Kingler, Goldeen, Seaking, Larvitar, Poochyena, Trapinch, Corphish, Crawdaunt, Shinx, Sandile, Pawniard, Bisharp', 'def': 'Sandshrew, Geodude, Shellder, Onix, Cubone, Marowak, Magcargo, Pelipper, Bronzor, Skorupi, Sewaddle, Swadloon, Venipede, Klink, Klang', 'spa': 'Oddish, Psyduck, Golduck, Abra, Gastly, Slugma, Glaceon', 'spd': 'Tentacool, Tentacruel, Seel, Mantine, Duskull, Dewpider', 'spe': 'Rattata, Raticate, Pikachu, Zubat, Golbat, Diglett, Meowth, Poliwag, Poliwhirl, Ponyta, Staryu, Magikarp, Electrike, Pachirisu, Blitzle, Woobat, Swoobat, Froakie, Frogadier, Helioptile, Salandit, Salazzle'}
 
-botgame = discord.Game('Say -help')
+botstream = discord.Streaming(name = 'Say: -help', url = 'https://www.twitch.tv/alexfives')
 
 topfact1 = 'Всегда ищите Starmie с природой Adamant. Это  лучшее, что может быть для него.:thumbsup:'
 topfact2 = 'Против фей очень эффективно ставить драконов, так как фея, тип атаки которой схож с её типом (STAB-эффект), ничего не сделает Вашему покемону, а вот дракон наоборот нанесёт двойной урон.:ok_hand:'
@@ -45,7 +45,7 @@ client = discord.Client()
 async def on_ready():
     print('{0.user} is ready!'.format(client))
     print('----------')
-    await client.change_presence(status=discord.Status.dnd, activity=botgame)
+    await client.change_presence(status=discord.Status.dnd, activity=botstream)
 
 
 
