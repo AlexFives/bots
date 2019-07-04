@@ -1,1 +1,1 @@
-web: python discordbotkvakep.py
+web: discordbotkvakep.py
