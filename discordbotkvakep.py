@@ -890,10 +890,11 @@ async def on_message(message):
             webtoken = web.token
         except:
             await message.channel.send('Вебхуки не найдены!', delete_after = 15)
+            return
         try:
             author = msg[1].replace('<', '')
-            author = msg[1].replace('>', '')
-            author = msg[1].replace('@', '')
+            author = author.replace('>', '')
+            author = author.replace('@', '')
             author = message.guild.get_member(int(author))
         except:
             await message.channel.send('Используйте: -writeas [author] [message]', delete_after = 15)
@@ -906,7 +907,7 @@ async def on_message(message):
         try:
             content = msg[2]
         except:
-            await message.channel.send('Используйте: -webhookas [author] [message]', delete_after = 15)
+            await message.channel.send('Используйте: -writeas [author] [message]', delete_after = 15)
             return
         webhook.send(
             content = content,
