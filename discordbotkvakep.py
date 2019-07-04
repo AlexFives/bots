@@ -922,7 +922,7 @@ async def on_message(message):
     if msglower.startswith('-ping'):
         await message.delete()
         msg = await message.channel.send('Считаю...')
-        ping = int((message.created_at.microsecond - msg.created_at.microsecond) / 10000)
+        ping = int((msg.created_at.microsecond - message.created_at.microsecond) / 10000)
         pingemoji = client.get_emoji(596025886537678869)
         await msg.edit(content = 'Задержка: **{}** ms! {}'.format(ping, pingemoji), delete_after = 15)
 
