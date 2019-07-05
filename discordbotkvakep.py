@@ -465,6 +465,33 @@ async def on_message(message):
         owner = message.guild.owner
 
         created = message.guild.created_at.date()
+        year = created.year
+        month = created.month
+        if month == 1:
+            month = 'января'
+        elif month == 2:
+            month = 'февраля'
+        elif month == 3:
+            month = 'марта'
+        elif month == 4:
+            month = 'апреля'
+        elif month == 5:
+            month = 'мая'
+        elif month == 6:
+            month = 'июня'
+        elif month == 7:
+            month = 'июля'
+        elif month == 8:
+            month = 'августа'
+        elif month == 9:
+            month = 'сентября'
+        elif month == 10:
+            month = 'октября'
+        elif month == 11:
+            month = 'ноября'
+        elif month == 12:
+            month = 'декабря'
+        day = created.day
 
         roles = len(message.guild.roles)
 
@@ -543,7 +570,7 @@ async def on_message(message):
         )
         info.add_field(
             name = '**Создан: **',
-            value = created
+            value = '{} {} {}'.format(day, month, year)
         )
         info.add_field(
             name = '**Каналов: **',
@@ -659,8 +686,48 @@ async def on_message(message):
                 elif month == 12:
                     month = 'декабря'
                 day = msg.created_at.day
-                hour = msg.created_at.hour
+                hour = msg.created_at.hour + 3
+                if hour == 0:
+                    hour = '00'
+                elif hour == 1:
+                    hour = '01'
+                elif hour == 2:
+                    hour = '02'
+                elif hour == 3:
+                    hour = '03'
+                elif hour == 4:
+                    hour = '04'
+                elif hour == 5:
+                    hour = '05'
+                elif hour == 6:
+                    hour = '06'
+                elif hour == 7:
+                    hour = '07'
+                elif hour == 8:
+                    hour = '08'
+                elif hour == 9:
+                    hour = '09'
                 minute = msg.created_at.minute
+                if minute == 0:
+                    minute = '00'
+                elif minute == 1:
+                    minute = '01'
+                elif minute == 2:
+                    minute = '02'
+                elif minute == 3:
+                    minute = '03'
+                elif minute == 4:
+                    minute = '04'
+                elif minute == 5:
+                    minute = '05'
+                elif minute == 6:
+                    minute = '06'
+                elif minute == 7:
+                    minute = '07'
+                elif minute == 8:
+                    minute = '08'
+                elif minute == 9:
+                    minute = '09'
                 datetime = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
                 embed = message.embeds
                 if len(embed) != 0:
@@ -674,7 +741,8 @@ async def on_message(message):
                         )
                         resend.set_author(
                             name = '{}        {}'.format(msg.author, datetime),
-                            icon_url = msg.author.avatar_url
+                            icon_url = msg.author.avatar_url,
+                            url = msg.jump_url
                         )
                         await message.channel.send(embed = resend, content = mes[2])
                     else:
@@ -684,7 +752,8 @@ async def on_message(message):
                         )
                         resend.set_author(
                             name = '{}        {}'.format(msg.author, datetime),
-                            icon_url = msg.author.avatar_url
+                            icon_url = msg.author.avatar_url,
+                            url = msg.jump_url
                         )
                         await message.channel.send(embed = resend)
 
