@@ -473,6 +473,13 @@ async def on_message(message):
         text_channels = len(message.guild.text_channels)
         voice_channels = len(message.guild.voice_channels)
         channels = text_channels + voice_channels
+        nsfw = 0
+        news = 0
+        for t in range(len(message.guild.text_channels)):
+            if message.guild.text_channels[t].is_nsfw():
+                nsfw += 1
+            if message.guild.text+channels[t].is_news():
+                news += 1
 
         emojis = len(message.guild.emojis)
 
@@ -531,7 +538,7 @@ async def on_message(message):
         )
         info.add_field(
             name = '**Каналов: **',
-            value = 'Всего: {}\nТекстовых: {}\nГолосовых: {}'.format(channels, text_channels, voice_channels)
+            value = 'Всего: {}\nТекстовых: {}\n  NSFW: {}\n  News: {}\nГолосовых: {}'.format(channels, text_channels, nsfw, news, voice_channels)
         )
         info.add_field(
             name = '**Участников: **',
