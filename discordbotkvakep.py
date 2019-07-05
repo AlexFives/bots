@@ -535,7 +535,7 @@ async def on_message(message):
         )
         info.add_field(
             name = '**Участников: **',
-            value = 'Всего: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}'.format(large, online_member, online, idle_member, idle, dnd_member, dnd, offline_member, offline)
+            value = 'Всего: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}'.format(large, online_member, online, idle_member, idle, dnd_member, dnd, offline_member, offline)
         )
         info.add_field(
             name = '**Количество ролей: **',
