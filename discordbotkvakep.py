@@ -457,17 +457,27 @@ async def on_message(message):
 
     if msglower.startswith('-serverinfo'):
         await message.delete()
+
         name = message.guild
+
         large = message.guild.member_count
+
         owner = message.guild.owner
+
         created = message.guild.created_at.date()
+
         roles = len(message.guild.roles)
+
         icon = message.guild.icon_url
+
         text_channels = len(message.guild.text_channels)
         voice_channels = len(message.guild.voice_channels)
         channels = text_channels + voice_channels
+
         emojis = len(message.guild.emojis)
+
         region = str(message.guild.region).title()
+
         verification = message.guild.verification_level
         if str(verification) == 'none':
             verification = 'Отсутствует'
@@ -479,6 +489,26 @@ async def on_message(message):
             verification = 'Высокий'
         elif str(verification) == 'extreme':
             verification = 'Высочайший'
+
+        online_member = client.get_emoji(596453205341241355)
+        idle_member = client.get_emoji(596453234227413031)
+        dnd_member = client.get_emoji(596453249712652308)
+        offline_member = client.get_emoji(596453263927279729)
+        membersonguild = ''
+        online = 0
+        idle = 0
+        dnd = 0
+        offline = 0
+        for m in range(len(message.guild.members)):
+            if message.guild.members[m].status == discord.Status.online:
+                online += 1
+            elif message.guild.members[m].status == discord.Status.idle:
+                idle += 1
+            elif message.guild.members[m].status == discord.Status.dnd:
+                dnd += 1
+            elif message.guild.members[m].status == discord.Status.offline:
+                offline += 1
+
         info = discord.Embed(
             description = 'Информация о сервере: ',
             color = 0xfcb803
@@ -505,7 +535,7 @@ async def on_message(message):
         )
         info.add_field(
             name = '**Участников: **',
-            value = large
+            value = 'Всего: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}'.format(large, online_member, online, idle_member, idle, dnd_member, dnd, offline_member, offline)
         )
         info.add_field(
             name = '**Количество ролей: **',
