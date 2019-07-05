@@ -482,6 +482,11 @@ async def on_message(message):
                 news += 1
 
         emojis = len(message.guild.emojis)
+        animated_emojis = 0
+        for e in range(len(message.guild.emojis)):
+            if message.guild.emojis[e].animated:
+                animated_emojis += 1
+        common_emojis = emojis - animated_emojis
 
         region = str(message.guild.region).title()
 
@@ -549,8 +554,8 @@ async def on_message(message):
             value = roles
         )
         info.add_field(
-            name = '**Количество эмодзи: **',
-            value = emojis
+            name = '**Эмодзи: **',
+            value = 'Всего: {}\nОбычных: {}\nАнимированных: {}'.format(emojis, common_emojis, animated_emojis)
         )
         info.add_field(
             name = '**Уровень проверки: **',
