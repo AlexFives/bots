@@ -687,6 +687,8 @@ async def on_message(message):
                     month = 'декабря'
                 day = msg.created_at.day
                 hour = msg.created_at.hour + 3
+                if hour > 23:
+                    hour -= 24
                 if hour == 0:
                     hour = '00'
                 elif hour == 1:
