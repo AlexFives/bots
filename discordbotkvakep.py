@@ -478,7 +478,7 @@ async def on_message(message):
         for t in range(len(message.guild.text_channels)):
             if message.guild.text_channels[t].is_nsfw():
                 nsfw += 1
-            if message.guild.text+channels[t].is_news():
+            if message.guild.text_channels[t].is_news():
                 news += 1
 
         emojis = len(message.guild.emojis)
