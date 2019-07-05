@@ -136,9 +136,27 @@ async def on_message(message):
         )
         await message.channel.send(embed=embed)
 
-    if msglower.startswith('-flip'):
-        flip = random.choice(['Орёл!', 'Решка!'])
-        await message.channel.send('Выбор монеты: ***' + str(flip) + '***')
+    if msglower.startswith('/flip'):
+        await message.delete()
+        orel1 = client.get_emoji(596784734571593748)
+        reshka1 = client.get_emoji(596784735758319619)
+        orel = 'https://i.imgur.com/lKRzOJT.png'
+        reshka = 'https://i.imgur.com/RLrFINV.png'
+        color = discord.Color.teal()
+        flip = random.choice([orel, reshka])
+        if flip == orel:
+            msg = 'Орёл'
+            emoji = orel1
+        else:
+            msg = 'Решка'
+            emoji = reshka1
+        flp = discord.Embed(
+            description = 'Выбор монеты: **{}**!'.format(msg),
+            color = color
+        )
+        flp.set_thumbnail(url = flip)
+        m = await message.channel.send(embed = flp)
+        await m.add_reaction(emoji)
     
     if msglower.startswith('-evs'):
         
