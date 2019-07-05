@@ -833,7 +833,7 @@ async def on_message(message):
             emojipics.append(emojis[i])
         for e in range(len(emojinames)):
             msg += '{} - {}\n'.format(emojinames[e], emojipics[e])
-            if e % 30 == 0 and e != 0:
+            if e % 20 == 0 and e != 0:
                 emojilist.append(msg)
                 msg = ''
                 continue
