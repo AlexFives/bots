@@ -136,7 +136,7 @@ async def on_message(message):
         )
         await message.channel.send(embed=embed)
 
-    if msglower.startswith('/flip'):
+    if msglower.startswith('-flip'):
         await message.delete()
         orel1 = client.get_emoji(596784734571593748)
         reshka1 = client.get_emoji(596784735758319619)
