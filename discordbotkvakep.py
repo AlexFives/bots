@@ -33,11 +33,87 @@ client = discord.Client()
 
 
 
+async def mute_check():
+    while True:
+        with open('kvakepmutedmembers.txt', 'r') as fin:
+            with open('kvakepmutedmembersnew.txt', 'w') as fout:
+                for line in fin:
+                    try:
+                        Y = re.search(r'Время: \d{4}-', line)
+                        Y = Y.group(0)
+                        Y = Y[7:]
+                        Y = Y.replace('-', '')
+                        Y = int(Y)
+                        M = re.search(r'Время: \d{4}-\d{2}-', line)
+                        M = M.group(0)
+                        M = M[12:]
+                        M = M.replace('-', '')
+                        M = int(M)
+                        D = re.search(r'Время: \d{4}-\d{2}-\d{2} ', line)
+                        D = D.group(0)
+                        D = D[15:]
+                        D = D.replace(' ', '')
+                        D = int(D)
+                        h = re.search(r'Время: \d{4}-\d{2}-\d{2} \d{2}:', line)
+                        h = h.group(0)
+                        h = h[18:]
+                        h = h.replace(':', '')
+                        h = int(h)
+                        m = re.search(r'Время: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:', line)
+                        m = m.group(0)
+                        m = m[21:]
+                        m = m.replace(':', '')
+                        m = int(m)
+                        s = re.search(r'Время: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', line)
+                        s = s.group(0)
+                        s = s[24:]
+                        s = int(s)
 
+                        if datetime.datetime.today() > datetime.datetime(Y, M, D, h, m, s):
+                            
+                            guild = re.search(r'Сервер: \d{1,20};', line)
+                            guild = guild.group(0)
+                            guild = guild[8:]
+                            guild = guild.replace(';', '')
+                            guild = client.get_guild(int(guild))
 
+                            member = re.search(r'Пользователь: \d{1,20};', line)
+                            member = member.group(0)
+                            member = member[14:]
+                            member = member.replace(';', '')
+                            member = guild.get_member(int(member))
 
+                            unmute = discord.Embed(
+                                title = 'Хорошая новость!',
+                                description = 'С Вас был снят мут!',
+                                color = discord.Color.gold()
+                            )
 
-
+                            for r in guild.roles:
+                                if int(r.permissions.value) == 1049600:
+                                    muterole = r
+                                    break
+                            else:
+                                muterole = await guild.create_role(
+                                    name = 'Muted',
+                                    permissions = discord.Permissions(permissions = 1049600),
+                                    color = discord.Color.dark_grey(),
+                                    reason = 'Роль для мутов'
+                                )
+                            await member.remove_roles(muterole, reason = 'Unmute')
+                            await member.send(embed = unmute)
+                        else:
+                            fout.write(line)
+                    except:
+                        pass
+                fout.close()
+            fin.close()
+        try:
+            os.remove('kvakepmutedmembers.txt')
+            os.renames('kvakepmutedmembersnew.txt', 'kvakepmutedmembers.txt')
+        except:
+            pass
+        await asyncio.sleep(30)
 
 
 
@@ -46,6 +122,8 @@ async def on_ready():
     print('{0.user} is ready!'.format(client))
     print('----------')
     await client.change_presence(status=discord.Status.dnd, activity=botstream)
+    loop = asyncio.get_event_loop()
+    asyncio.ensure_future(mute_check())
 
 
 
@@ -1064,6 +1142,84 @@ async def on_message(message):
         ping = int((msg.created_at.microsecond - message.created_at.microsecond) / 10000)
         pingemoji = client.get_emoji(596025886537678869)
         await msg.edit(content = 'Задержка: **{}** ms! {}'.format(ping, pingemoji), delete_after = 15)
+
+    if msglower.startswith('-mute'):
+        if message.author.guild_permissions.mute_members or message.author.id == 400231667408699392:
+            msg = message.content.split(' ', 3)
+            await message.delete()
+
+            member = msg[1]
+            member = member.replace('<', '')
+            member = member.replace('>', '')
+            member = member.replace('@', '')
+            member = message.guild.get_member(int(member))
+            
+            time = msg[2]
+            days = re.search(r'\d{1,2}d', time)
+            hours = re.search(r'\d{1,2}h', time)
+            minutes = re.search(r'\d{1,2}m', time)
+            seconds = re.search(r'\d{1,2}s', time)
+            try:
+                days = days.group(0)
+                days = days.replace('d', '')
+                days = int(days)
+            except:
+                days = 0
+            try:
+                hours = hours.group(0)
+                hours = hours.replace('h', '')
+                hours = int(hours)
+            except:
+                hours = 0
+            try:
+                minutes = minutes.group(0)
+                minutes = minutes.replace('m', '')
+                minutes = int(minutes)
+            except:
+                minutes = 0
+            try:
+                seconds = seconds.group(0)
+                seconds = seconds.replace('s', '')
+                seconds = int(seconds)
+            except:
+                seconds = 0
+            time = datetime.datetime.now() + datetime.timedelta(days = days, hours = hours, minutes = minutes, seconds  = seconds)
+            print(time)
+            try:
+                reason = msg[3]
+            except:
+                reason = ''
+
+            muted = open('kvakepmutedmembers.txt', 'a')
+            muted.write('Сервер: {}; Пользователь: {}; Время: {}; Замучен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason))
+            muted.close()
+
+            muteemb = discord.Embed(
+                description = 'Вы были замучены {} на {}.'.format(message.author, msgtime),
+                color = discord.Color.dark_grey()
+            )
+            incha = discord.Embed(
+                description = 'Пользователю {} успешно выдан мут!'.format(member),
+                color = discord.Color.dark_green()
+            )
+            
+            muterole = discord.Role
+            for r in message.guild.roles:
+                if int(r.permissions.value) == 1049600:
+                    muterole = r
+                    break
+            else:
+                muterole = await message.guild.create_role(
+                    name = 'Muted',
+                    permissions = discord.Permissions(permissions = 1049600),
+                    color = discord.Color.dark_grey(),
+                    reason = 'Роль для мутов'
+                )
+            await member.add_roles(muterole, reason = 'Muted')
+            await message.channel.send(embed = incha)
+            await member.send(embed = muteemb)
+
+
 
 @client.event
 async def on_reaction_add(reaction, user):
