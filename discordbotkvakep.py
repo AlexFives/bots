@@ -1195,7 +1195,7 @@ async def on_message(message):
             muted.close()
 
             muteemb = discord.Embed(
-                description = 'Вы были замучены {} на {}.'.format(message.author, msgtime),
+                description = 'Вы были замучены {} на {}.'.format(message.author, time),
                 color = discord.Color.dark_grey()
             )
             incha = discord.Embed(
