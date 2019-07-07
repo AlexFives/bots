@@ -1,1 +1,1 @@
-#kvakepmuteslogs: Сервер: guild.id, Пользователь: member.id, Время: time, Замучен: message.author, Причина: txt
+1
