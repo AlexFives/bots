@@ -405,7 +405,7 @@ async def on_message(message):
                         reason = 'Category for kvakep\'s logs'
                     )
                 for chan in kvakeplogs.channels:
-                    if chan.name = 'kicks':
+                    if chan.name == 'kicks':
                         kickslog = chan
                         break
                 else:
@@ -1214,7 +1214,7 @@ async def on_message(message):
                     reason = 'Category for kvakep\'s logs'
                 )
             for chan in kvakeplogs.channels:
-                if chan.name = 'mutes':
+                if chan.name == 'mutes':
                     muteslog = chan
                     break
             else:
@@ -1241,6 +1241,14 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав!', delete_after = 15)
+
+    if msglower.startswith('-mlogs'):
+        try:
+            f = open('kvakepmutedmembers.txt', 'r')
+            lines = f.readlines()
+            await message.channel.send(lines)
+        except FileNotFoundError:
+            await message.channel.send('File Not Found')
 
 
 
