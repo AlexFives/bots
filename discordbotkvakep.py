@@ -1189,10 +1189,12 @@ async def on_message(message):
                 reason = msg[3]
             except:
                 reason = ''
-
-            muted = open('kvakepmutedmembers.txt', 'a')
-            muted.write('Сервер: {}; Пользователь: {}; Время: {}; Замучен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason))
-            muted.close()
+            try:
+                muted = open('kvakepmutedmembers.txt', 'a')
+                muted.write('Сервер: {}; Пользователь: {}; Время: {}; Замучен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason))
+                muted.close()
+            except Exception as e:
+                await message.channel.send(e)
 
             muteemb = discord.Embed(
                 description = 'Вы были замучены {} на {}.'.format(message.author, msgtime),
@@ -1202,7 +1204,7 @@ async def on_message(message):
                 description = 'Пользователю {} успешно выдан мут!'.format(member),
                 color = discord.Color.dark_green()
             )
-            
+
             muterole = discord.Role
             for r in message.guild.roles:
                 if int(r.permissions.value) == 1049600:
