@@ -5,6 +5,9 @@ import asyncio
 import time
 import datetime
 import os
+import math
+import subprocess
+
 
 
 pokemonlist = {'bulbasaur':'1SpA', 'ivysaur':'1SpA, 1SpD', 'venusaur':'2SpA, 1SpD', 'charmander':'1Spe', 'charmeleon':'1SpA, 1Spe', 'charizard':'3SpA', 'squirtle':'1Def', 'wartortle':'1Def, 1SpD', 'blastoise':'3SpD', 'caterpie':'1HP', 'metapod':'2Def', 'butterfree':'2SpA, 1SpD', 'weedle':'1Spe', 'kakuna':'2Def', 'beedrill':'2Atk, 1SpD', 'pidgey':'1Spe', 'pidgeotto':'2Spe', 'pidgeot':'3Spe', 'rattata':'1Spe', 'raticate':'2Spe', 'spearow':'1Spe', 'fearow':'2Spe', 'ekans':'1Atk', 'arbok':'2Atk', 'pikachu':'2Spe', 'raichu':'3Spe', 'sandshrew':'1Def', 'sandslash':'2Def', 'nidoran':'♀: 1HP, ♂: 1Atk', 'nidorino':'2HP', 'nidoqueen':'3HP', 'nidorino':'2Atk', 'nidoking':'3Atk', 'clefairy':'2HP', 'clefable':'3HP', 'vulpix':'1Spe', 'ninetales':'1SpD, 1Spe', 'jugglypuff':'2HP', 'wigglypuff':'3HP', 'zubat':'1Spe', 'golbat':'2Spe', 'oddish':'1SpA', 'gloom':'2SpA', 'vileplume':'3SpA', 'paras':'1Atk', 'parasect':'2Atk', 'venonat':'1SpD', 'venomoth':'1SpA, 1Spe', 'diglett':'1Spe', 'dugtrio':'2Spe', 'meowth':'1Spe', 'persian':'2Spe', 'psyduck':'1SpA', 'golduck':'2SpA', 'mankey':'1Atk', 'primeape':'2Atk', 'growlithe':'1Atk', 'arcanine':'2Atk', 'poliwag':'1Spe', 'poliwhirl':'2Spe', 'poliwrath':'3Def', 'abra':'1SpD', 'kadabra':'2SpD', 'alakazam':'3SpD', 'machop':'1Atk', 'machoke':'2Atk', 'machamp':'3Atk', 'bellsprout':'1Atk', 'weepinbell':'2Atk', 'victreebel':'3Atk', 'tentacool':'1SpD', 'tentacruel':'2SpD', 'geodude':'1Def', 'graveler':'2Def', 'golem':'3Def', 'ponyta':'1Spe', 'rapidash':'2Spe', 'slowpoke':'1HP', 'slowbro':'2Def', 'magnemite':'1SpD', 'magnetone':'2SpD', 'farfetchd':'1Atk', 'doduo':'1Atk', 'dodrio':'2Atk', 'seel':'1SpD', 'dewgong':'2SpD', 'grimer':'1HP', 'muk':'1HP, 1Atk', 'shellder':'1Def', 'cloyster':'2Def', 'gastly':'1SpA', 'haunter':'2SpA', 'gengar':'3SpA', 'onix':'1Def', 'drowzee':'1SpD', 'hypno':'2SpD', 'krabby':'1Atk', 'kingler':'2Atk', 'voltorb':'1Spe', 'electrode':'2Spe', 'exeggcute':'1Def', 'exeggutor':'2SpA', 'cubone':'1Def', 'marowak':'2Def', 'hitmonlee':'2Atk', 'hitmonchan':'2SpD', 'lickitung':'2HP', 'koffing':'1Def', 'weezing':'2Def', 'rhyhorn':'1Def', 'rhydon':'2Atk', 'chansey':'2HP', 'tangela':'1Def', 'kangaskhan':'2HP', 'horsea':'1SpA', 'seadra':'1Def, 1SpA', 'goldeen':'1Atk', 'seaking':'2Atk', 'staryu':'1Spe', 'starmie':'2Spe', 'mr. mime':'2SpD', 'scyther':'1Atk', 'jynx':'2SpA', 'electabuzz':'2Spe', 'magmar':'2SpA', 'pinsir':'2Atk', 'tauros':'1Atk', 'magikarp':'1Spe', 'gyarados':'2Atk', 'lapras':'2HP', 'ditto':'1HP', 'eevee':'1SpD', 'vaporeon':'2HP', 'jolteon':'2Spe', 'flareon':'2Atk', 'porygon':'1SpA', 'omanyte':'1Def', 'omastar':'2Def', 'kabuto':'1Def', 'kabutops':'2Atk', 'aerodactyl':'2Spe', 'snorlax':'2HP', 'articuno':'3SpD', 'zapdos':'3SpA', 'moltres':'3SpA', 'dratini':'1Atk', 'dragonair':'2Atk', 'dragonite':'3Atk', 'mewtwo':'3SpA', 'mew':'3HP', 'chikorita':'1SpD', 'bayleef':'1Def, 1SpD', 'meganium':'1Def, 2SpD', 'cyndaquil':'1Spe', 'quilava':'1SpA, 1Spe', 'typhlosion':'3SpA', 'totodile':'1Atk', 'croconaw':'1Atk, 1Def', 'feraligatr':'2Atk, 1Def', 'sentret':'1Atk', 'furret':'1Spe', 'hoothoot':'1HP', 'noctowl':'2HP', 'ledyba':'1SpD', 'ledian':'2SpD', 'spinarak':'1Atk', 'ariados':'2Atk', 'crobat':'3Spe', 'chinchou':'1HP', 'lanturn':'2HP', 'pichu':'1Spe', 'cleffa':'1SpD', 'igglybuff':'1HP', 'togepi':'1SpD', 'togetic':'2SpD', 'natu':'1SpA', 'xatu':'1SpA, 1Spe', 'mareep':'1SpA', 'flaaffy':'2SpA', 'ampharos':'3SpA', 'bellossom':'3SpD', 'marill':'2HP', 'azumarill':'3HP', 'sudowoodoo':'2Def', 'politoed':'3SpD', 'hoppip':'1SpD', 'skiploom':'2Spe', 'jumpluff':'3Spe', 'aipom':'1Spe', 'sunkern':'1SpA', 'sunflora':'2SpA', 'yanma':'1Spe', 'wooper':'1HP', 'quagsire':'2HP', 'espeon':'2SpA', 'umbreon':'2SpD', 'murkrow':'1Spe', 'slowking':'3SpD', 'misdeavus':'1SpD', 'unown':'1Atk', 'wobbuffet':'2HP', 'girafarig':'2SpA', 'pimeco':'1Def', 'forretress':'2Def', 'dunsparce':'1HP', 'gligar':'1Def', 'steelix':'2Def', 'snubbull':'1Atk', 'granbull':'2Atk', 'qwillfish':'1Atk', 'scizor':'2Atk', 'shuckle':'1Def, 1SpD', 'heracross':'2Atk', 'sneasel':'1Spe', 'teddiursa':'1Atk', 'ursaring':'2Atk', 'slugma':'1SpA', 'magcargo':'2Def', 'swinub':'1Atk', 'piloswine':'1HP, 1Atk', 'corsola':'1Def', 'remoraid':'1SpA', 'octillery':'1Atk, 1SpA', 'delibird':'1Spe', 'mantine':'2SpD', 'skarmory':'2Def', 'houndour':'1SpA', 'houndoom':'2SpA', 'kingdra':'1Atk, 1SpA, 1SpD', 'phanpy':'1HP', 'donphan':'1Atk, 1Def', 'porygon2':'2SpA', 'stantler':'1Atk', 'smeargle':'1Spe', 'tyrogue':'1Atk', 'hitmontop':'2SpD', 'smoochum':'1SpA', 'elekid':'1Spe', 'magby':'1Spe', 'miltank':'2Def', 'blissey':'3HP', 'raikou':'1SpA, 2Spe', 'entei':'1HP, 2Atk', 'suicune':'1Def, 2SpD', 'larvitar':'1Atk', 'pupitar':'2Atk', 'tyranitar':'3Atk', 'lugia':'3SpD', 'ho-oh':'3SpD', 'celebi':'3HP', 'treecko':'1Spe', 'grovyle':'2Spe', 'sceptile':'3Spe', 'torchik':'1SpA', 'combusken':'1Atk, 1SpA', 'blaziken':'3Atk', 'mudkip':'1Atk', 'marshtomp':'2Atk', 'swampert':'3Atk', 'poochyena':'1Atk', 'mightyena':'2Atk', 'zigzagoon':'1Spe', 'linoone':'2Spe', 'wurmple':'1HP', 'silcoon':'2Def', 'beautifly':'3SpA', 'cascoon':'2Def', 'dustox':'3SpD', 'lotad':'1SpD', 'lombre':'2SpD', 'ludicolo':'3SpD', 'seedot':'1Def', 'nuzleaf':'2Atk', 'shiftry':'3Atk', 'taillow':'1Spe', 'swellow':'2Spe', 'wingull':'1Spe', 'pelliper':'2Def', 'ralts':'1SpA', 'kirlia':'2SpA', 'gardevoir':'3SpA', 'surskit':'1Spe', 'masquerain':'1SpA, 1SpD', 'shroomish':'1HP', 'breeloom':'2Atk', 'slakoth':'1HP', 'vigoroth':'2Spe', 'slaking':'3HP', 'nincada':'1Def', 'ninjask':'2Spe', 'shedinja':'2HP', 'whismur':'1HP', 'loudred':'2HP', 'exploud':'3HP', 'makuhita':'1HP', 'hariyama':'2HP', 'azurill':'1HP', 'nosepass':'1Def', 'skitty':'1Spe', 'delcatty':'1HP, 1Spe', 'sableye':'1Atk, 1Def', 'mawile':'1Def, 1Def', 'aron':'1Def', 'lairon':'2Def', 'aggron':'3Def', 'meditite':'1Spe', 'medicham':'2Spe', 'electrike':'1Spe', 'manectric':'2Spe', 'plusle':'1Spe', 'minun':'1Spe', 'volbeat':'1Spe', 'illumise':'1Spe', 'roselia':'2SpA', 'gulpin':'1HP', 'swalot':'2HP', 'carvanha':'1Atk', 'sharpedo':'2Atk', 'wailmer':'1HP', 'wailord':'2HP', 'numel':'1SpA', 'camerupt':'1Atk, 1SpA', 'torkoal':'2Def', 'spoink':'1SpD','grumpig':'2SpD', 'spinda':'1SpA', 'trapinch':'1Atk', 'vibrava':'1Atk, 1Spe', 'flygon':'1Atk, 2Spe', 'cacnea':'1SpA', 'cacturne':'1Atk, 1SpA', 'swablu':'1SpD', 'altaria':'2SpD', 'zangoose':'2Atk', 'seviper':'1Atk, 1SpA', 'lunatone':'2SpD', 'solrock':'2Atk', 'barboach':'1HP', 'whiscash':'2HP', 'corphish':'1Atk', 'crawdaunt':'2Atk', 'baltoy':'1SpD', 'claydol':'2SpD', 'lileep':'1SpD', 'cradily':'2SpD', 'anorith':'1Atk', 'armaldo':'2Atk', 'feebas':'1Spe', 'milotic':'2SpD', 'castform':'1HP', 'kecleon':'1SpD', 'shuppet':'1Atk', 'banette':'2Atk', 'duskull':'1SpD', 'dusclops':'1Def, 1SpD', 'tropius':'2HP', 'chimecho':'1SpA, 1SpD', 'absol':'2Atk', 'wynaut':'1HP', 'snorunt':'1HP', 'glalie':'1HP', 'spheal':'1HP', 'sealeo':'2HP', 'walrein':'3HP', 'clamperl':'1Def', 'huntail':'1Atk, 1Def', 'gorebyss':'2SpD', 'relicanth':'1HP, 1Def', 'luvdisc':'1Spe', 'bagon':'1Atk', 'shelgon':'2Def', 'salamence':'3Atk', 'beldum':'1Def', 'metang':'2Def', 'metagross':'3Def', 'regirock':'3Def', 'regice':'3SpD', 'registeel':'2Def, 1SpD', 'latias':'3SpD', 'latios':'3SpA', 'kyogre':'3SpA', 'groudon':'3Atk', 'rayquaza':'2Atk, 1SpA', 'jirachi':'3HP', 'deoxys':'1Atk, 1SpAm 1Spe', 'turtwig':'1Atk', 'grotle':'1Atk, 1Def', 'torterra':'2Atk, 1Def', 'chimchar':'1Spe', 'monferno':'1SpA, 1Spe', 'infernape':'1Atk, 1SpA, 1Spe', 'piplup':'1SpA', 'prinlup':'2SpA', 'empoleon':'3SpA', 'starly':'1Spe', 'staravia':'2Spe', 'staraptor':'3Atk', 'bidoof':'1HP', 'bibarel':'2Atk', 'kricketot':'1Def', 'kricketune':'2Atk', 'shinx':'1Atk', 'luxio':'2Atk', 'luxray':'3Atk', 'budew':'1SpA', 'roserade':'3SpA', 'cranidos':'1Atk', 'rampardos':'2Atk', 'shieldon':'1Def', 'bastiodon':'2Def', 'burmy':'1SpD', 'wormada':'2SpD', 'mothim':'1Atk, 1SpA', 'combee':'1Spe', 'vespiqueen':'1Def, 1SpD', 'pachirisu':'1Spe', 'buizel':'1Spe', 'floatzzel':'2Spe', 'cherubi':'1SpA', 'cherrim':'2SpA', 'shellos':'1HP', 'gastrodon':'2HP', 'ambipom':'2Spe', 'drifloon':'1HP', 'drifblim':'2HP', 'buneary':'1Spe', 'lopunny':'2Spe', 'mismagius':'1SpA, 1SpD', 'honchkrow':'2Atk', 'glameow':'1Spe', 'purugly':'2Spe', 'chingling':'1SpA', 'stunky':'1Spe', 'skuntank':'2HP', 'bronzor':'1Def', 'bonsly':'1Def, 1SpD', 'mime jr.':'1SpD', 'happiny':'1HP', 'chatot':'1Atk', 'spiritomb':'1Def, 1SpD', 'gible':'1Atk', 'gabite':'2Atk', 'garchomp':'3Atk', 'munchlax':'1HP', 'riolu':'1Atk', 'lucario':'1Atk, 1SpA', 'hippopotas':'1Def', 'hippodon':'2Def', 'skorupi':'1Def', 'drapion':'2Def', 'croagunk':'1Atk', 'toxicroak':'2Atk', 'carnivine':'2Atk', 'finneon':'1Spe', 'lumineon':'2Spe', 'mantyke':'1SpD', 'snover':'1Atk', 'abomasnow':'1Atk, 1SpA', 'weavile':'1Atk, 1Spe', 'magnezone':'3SpA', 'licklicky':'3HP', 'rhyperior':'3Atk', 'tangrowth':'2Def', 'electivire':'3Atk', 'magmortar':'3SpA', 'togekiss':'2SpA, 1SpD', 'yanmega':'2Atk', 'leafeon':'2Def', 'glaceon':'2SpA', 'gliscor':'2Def', 'mamoswine':'3Atk', 'porygonz':'3SpA', 'gallade':'3Atk', 'probopass':'1Def, 2SpD', 'dusknoir':'1Def, 2SpD', 'froslass':'2Spe', 'rotom':'1SpA, 1Spe', 'uxie':'2Def, 1SpD', 'mespirit':'1Atk, 1SpA, 1SpD', 'azelf':'2Atk, 1SpA', 'dialga':'3SpA', 'palkia':'3SpA', 'heatran':'3SpA', 'regigigas':'3Atk', 'giratina':'3HP', 'cresselia':'3SpD', 'phione':'1HP', 'manaphy':'3HP', 'darkrai':'2SpA, 1Spe', 'shaymin':'3HP', 'arceus':'3HP', 'victini':'3HP', 'snivy':'1Spe', 'servine':'2Spe', 'serperior':'3Spe', 'tepig':'1HP', 'pignite':'2Atk', 'emboar':'3Atk', 'oshawott':'1SpA', 'dewott':'2SpA', 'samurott':'3SpA', 'patrat':'1Atk', 'watchog':'2Atk', 'lillipup':'1Atk', 'herdier':'2Atk', 'stoutland':'3Atk', 'purrloin':'1Spe', 'liepard':'2Spe', 'pansage':'1Spe', 'simisage':'2Spe', 'pansear':'1Spe', 'simisear':'2Spe', 'panpour':'1Spe', 'simipour':'2Spe', 'munna':'1HP', 'musharna':'2HP', 'pidove':'1Atk', 'tranquill':'2Atk', 'unfezant':'3Atk', 'blitzle':'1Spe', 'zebstrike':'2Spe', 'roggenrola':'1Def', 'boldore':'1Atk, 1Def', 'gigalith':'3Atk', 'woobat':'1Spe', 'swoobat':'2Spe', 'drilbur':'1Atk', 'excadrill':'2Atk', 'audino':'2HP', 'timburr':'1Atk', 'gurdurr':'2Atk', 'conkeldurr':'3Atk', 'tympole':'1Spe', 'palpitoad':'2HP', 'seismitoad':'3HP', 'throh':'2HP', 'sawk':'2Atk', 'sewaddle':'1Atk', 'swadloon':'2Atk', 'leavanny':'3Atk', 'venipede':'1Def', 'whirlipede':'2Def', 'scolipede':'3Spe', 'cottonee':'1Spe', 'petilil':'2Spe', 'lilligant':'2SpA', 'basculin':'2Spe', 'sandile':'1Atk', 'krokorok':'2Atk', 'krookodile':'3Atk', 'darumaka':'1Atk', 'darmanitan':'2Atk', 'maractus':'2SpA', 'dwebble':'1Def', 'crustle':'2Def', 'scraggy':'1Atk', 'scrafty':'1Def, 1SpD', 'sigilyph':'2SpA', 'yamask':'1Def', 'cofagrigus':'2Def', 'tirtouga':'1Def', 'carracosta':'2Def', 'archen':'1Atk', 'archeops':'2Atk', 'trubbish':'1Spe', 'garbodor':'2Atk', 'zorua':'1SpA', 'zoroark':'2SpA', 'minccino':'1Spe', 'cinccino':'2Spe', 'gothita':'1SpD', 'gothorita':'2SpD', 'gothitelle':'3SpD', 'solosis':'1SpA', 'duosion':'2SpA', 'reuniclus':'3SpA', 'ducklett':'1HP', 'swanna':'2Spe', 'vanillite':'1SpA', 'vanillish':'2SpA', 'vanilluxe':'3SpA', 'deerling':'1Spe', 'sawsbuck':'2Atk', 'emolga':'2Spe', 'karrablast':'1Atk', 'escavalier':'2Atk', 'foongus':'1HP', 'amoongus':'2HP', 'frillish':'1SpD', 'jellicent':'2SpD', 'alomomola':'2HP', 'joltik':'1Spe', 'galvantula':'2Spe', 'ferroseed':'1Def', 'ferrothorn':'2Def', 'klink':'1Def', 'klang':'2Def', 'klinklang':'3Def', 'tynamo':'1Spe', 'elektrik':'2Atk', 'eelektross':'3Atk', 'elgyem':'1SpA', 'beheeyem':'2SpA', 'litwick':'1SpA', 'lampent':'2SpA', 'chandelure':'3SpA', 'axew':'1Atk', 'fraxure':'2Atk', 'haxorus':'3Atk', 'chubchoo':'1Atk', 'beartic':'2Atk', 'cryogonal':'2SpD', 'shelmet':'1Def', 'accelgor':'2Spe', 'stunfisk':'2HP', 'mienfoo':'1Atk', 'mienshao':'2Atk', 'druddigon':'2Atk', 'golett':'1Atk', 'golurk':'2Atk', 'pawniard':'1Atk', 'bisharp':'2Atk', 'bouffalant':'2Atk', 'rufflet':'1Atk', 'braviary':'2Atk', 'vullaby':'1Def', 'mandibuzz':'2SpA', 'heatmor':'2SpA', 'durant':'2Def', 'deino':'1Atk', 'zweilous':'2Atk', 'hydreigon':'3SpA', 'larvesta':'1Atk', 'volcarona':'3SpA', 'cobalion':'3Def', 'terrakion':'3Atk', 'virizion':'3SpD', 'tornadus':'3Atk', 'thundurus':'3Atk', 'reshiram':'3SpA', 'zekrom':'3Atk', 'landorus':'3SpA', 'kyurem':'1HP, 1Atk, 1SpA', 'keldeo':'3SpA', 'meloetta':'1SpA, 1SpD, 1Spe', 'genesect':'1Atk, 1SpA, 1Spe', 'chespin':'1Def', 'quilladin':'2Def', 'chesnaught':'3Def', 'fennekin':'1SpA', 'braixen':'2SpA', 'delphox':'3SpA', 'froakie':'1Spe', 'frogadier':'2Spe', 'greninja':'3Spe', 'bunnelby':'1Spe', 'diggersby':'2HP', 'fletchling':'1Spe', 'fletchinder':'2Spe', 'talonflame':'3Spe', 'scatterbug':'1Def', 'spewpa':'2Def', 'vivillon':'1HP, 1SpA, 1Spe', 'litleo':'1SpA', 'pyroar':'2SpA', 'flabebe':'1SpD', 'floette':'2SpD', 'florges':'3SpD', 'skiddo':'1HP', 'gogoat':'2HP', 'pancham':'1Atk', 'pangoro':'2Atk', 'furfrou':'1Spe', 'espurr':'1Spe', 'meowstic':'2Spe', 'honedge':'1Def', 'doublade':'2Def', 'aegislash':'2Atk, 1SpA', 'spritzee':'1HP', 'aromatisse':'2HP', 'swirlix':'1Def', 'slurpuff':'2Def', 'inkey':'1Atk', 'malamar':'2Atk', 'binacle':'1Atk', 'barbacle':'2Atk', 'skrepl':'1SpD', 'dragalge':'2SpD', 'clauncher':'1SpA', 'clawitzer':'2SpA', 'helioptile':'1Spe', 'tyrunt':'1Atk', 'tyrantrum':'2Atk', 'amaura':'1HP', 'aurorus':'2HP', 'sylveon':'2SpD', 'hawlucha':'2Atk', 'dedenne':'2Spe', 'carbink':'1Def, 1SpD', 'goomy':'1SpD', 'sliggoo':'2SpD', 'goodra':'3SpD', 'klefki':'1Def', 'phantump':'1Atk', 'trevenant':'2Atk', 'pumpkaboo':'1Def', 'gourgeist':'2Def', 'bergmite':'1Def', 'avalugg':'2Def', 'noibat':'1Spe', 'noivern':'2Spe', 'xerneas':'3HP', 'yveltal':'3HP', 'zygarde':'3HP', 'diancie':'1Def, 2SpD', 'hoopa':'3SpA', 'volcanion':'3SpA', 'rowlet':'1HP', 'dartrix':'2HP', 'decideueye':'3Atk', 'litten':'1Spe', 'torracat':'2Spe', 'incineroar':'3Atk', 'popplio':'1SpA', 'brionne':'2SpA', 'primarina':'3SpA', 'pikipek':'1Atk', 'trumbeak':'2Atk', 'toucannon':'3Atk', 'yungoos':'1Atk', 'gumshoos':'2Atk', 'grubbin':'1Atk', 'charjabug':'2Def', 'vikavolt':'3SpA', 'crabrawler':'1Atk', 'crabominable':'2Atk', 'oricorio':'2SpA', 'cutiefly':'1Spe', 'ribombee':'2Spe', 'rockruff':'1Atk', 'lycanroc':'2Atk', 'wighiwashi':'1HP', 'mareanie':'1Def', 'toxapex':'2Def', 'mudbray':'1Atk', 'mudsdale':'2Atk', 'dewpider':'1SpA', 'araquinid':'2SpA', 'fomantis':'1Atk', 'lurantis':'2Atk', 'morelull':'1SpD', 'shiinotic':'2SpD', 'salandit':'1Spe', 'salazze':'2Spe', 'stufful':'1Atk', 'bewear':'2Atk', 'bounsweet':'1HP', 'steenee':'2Spe', 'tsareena':'3Atk', 'comfey':'2SpD', 'oranguru':'2SpD', 'passimian':'2Atk', 'wimpod':'1Spe', 'golisopod':'2Def', 'sandygast':'1Def', 'palossand':'2Def', 'pyukumuku':'2SpD', 'type: null':'2HP', 'silvally':'3HP', 'minior':'1Def', 'komala':'2Atk', 'turtonator':'2Def', 'togedemaru':'2Atk', 'mimikyu':'2SpD', 'bruxish':'2Atk', 'drampa':'2SpA', 'dhelmise':'2Atk', 'jangmo-o':'1Def', 'hakamo-o':'2Def', 'kommo-o':'3Def', 'tapu koko':'3Spe', 'tapu lele':'3SpA', 'tapu bulu':'3Atk', 'tapu fini':'3SpD', 'cosmog':'1HP', 'cosmoem':'1Def, 1SpD', 'solgaleo':'3Atk', 'lunala':'3SpA', 'nihilego':'3SpD', 'buzzwole':'1Atk, 2Def', 'pheromosa':'3Spe', 'xurkitree':'3SpA', 'celesteela':'1Atk, 1Def, 1SpA', 'kartana':'3Atk', 'guzzlord':'3HP', 'necrozma':'1Atk, 2SpA', 'magearna':'3SpA', 'marshadow':'2Atk, 1Spe', 'poipole':'1Spe', 'naganadel':'3SpA', 'stakataka':'3Def', 'blacephalon':'3SpA', 'zeraora':'3Spe'}
@@ -141,6 +144,114 @@ async def mute_check():
         try:
             os.remove('kvakepmutedmembers.txt')
             os.renames('kvakepmutedmembersnew.txt', 'kvakepmutedmembers.txt')
+        except:
+            pass
+        
+        with open('kvakepbannedmembers.txt', 'r') as fin:
+            with open('kvakepbannedmembersnew.txt', 'w') as fout:
+                for line in fin:
+                    try:
+                        Y = re.search(r'Время: \d{4}-', line)
+                        Y = Y.group(0)
+                        Y = Y[7:]
+                        Y = Y.replace('-', '')
+                        Y = int(Y)
+                        M = re.search(r'Время: \d{4}-\d{2}-', line)
+                        M = M.group(0)
+                        M = M[12:]
+                        M = M.replace('-', '')
+                        M = int(M)
+                        D = re.search(r'Время: \d{4}-\d{2}-\d{2} ', line)
+                        D = D.group(0)
+                        D = D[15:]
+                        D = D.replace(' ', '')
+                        D = int(D)
+                        h = re.search(r'Время: \d{4}-\d{2}-\d{2} \d{2}:', line)
+                        h = h.group(0)
+                        h = h[18:]
+                        h = h.replace(':', '')
+                        h = int(h)
+                        m = re.search(r'Время: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:', line)
+                        m = m.group(0)
+                        m = m[21:]
+                        m = m.replace(':', '')
+                        m = int(m)
+                        s = re.search(r'Время: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', line)
+                        s = s.group(0)
+                        s = s[24:]
+                        s = int(s)
+
+                        if datetime.datetime.today() > datetime.datetime(Y, M, D, h, m, s):
+                            
+                            guild = re.search(r'Сервер: \d{1,20};', line)
+                            guild = guild.group(0)
+                            guild = guild[8:]
+                            guild = guild.replace(';', '')
+                            guild = client.get_guild(int(guild))
+
+                            member = re.search(r'Пользователь: \d{1,20};', line)
+                            member = member.group(0)
+                            member = member[14:]
+                            member = member.replace(';', '')
+                            member = guild.get_member(int(member))
+
+                            unban = discord.Embed(
+                                title = 'Хорошая новость!',
+                                description = 'С Вас был снят бан!',
+                                color = discord.Color.gold()
+                            )
+
+                            for r in guild.roles:
+                                if int(r.permissions.value) == 512:
+                                    banrole = r
+                                    break
+                            else:
+                                banrole = await guild.create_role(
+                                    name = 'Banned',
+                                    permissions = discord.Permissions(permissions = 512),
+                                    color = discord.Color.dark_grey(),
+                                    reason = 'Роль для банов'
+                                )
+                            
+                            for cat in guild.categories:
+                                if cat.name == 'kvakep-logs':
+                                    kvakeplogs = cat
+                                    break
+                            else:
+                                kvakeplogs = await guild.create_category_channel(
+                                    name = 'kvakep-logs',
+                                    overwrites = overwrites,
+                                    reason = 'Category for kvakep\'s logs'
+                                )
+                            for chan in kvakeplogs.channels:
+                                if chan.name == 'bans':
+                                    banslog = chan
+                                    break
+                            else:
+                                banslog = await kvakeplogs.create_text_channel(
+                                    name = 'bans',
+                                    overwrites = overwrites,
+                                    reason = 'Channel for kvakep\'s bans'
+                                )
+
+                            funnydogemoji = client.get_emoji(596690644467187723)
+                            unbanembed = discord.Embed(
+                                description = 'С пользователя {} был снят бан!\n{}'.format(member.mention, funnydogemoji),
+                                color = discord.Color.dark_green()
+                            )
+
+                            await banslog.send(embed = unbanembed)
+                            await member.remove_roles(banrole, reason = 'Unban')
+                            await member.send(embed = unban)
+                        else:
+                            fout.write(line)
+                    except:
+                        pass
+                fout.close()
+            fin.close()
+        try:
+            os.remove('kvakepbannedmembers.txt')
+            os.renames('kvakepbannedmembersnew.txt', 'kvakepbannedmembers.txt')
         except:
             pass
         await asyncio.sleep(10)
@@ -472,7 +583,6 @@ async def on_message(message):
                     await message.guild.kick(member, reason = 'Исключён: {} {}'.format(kickauthor, message.author))
                 
                 invitation = await message.channel.create_invite(max_uses = 1, reason = 'After kick')
-
                 
                 await message.channel.send('Пользователь {} был успешно исключён! :white_check_mark:'.format(member), delete_after = 15)
                 await kickslog.send(embed = tologs)
@@ -480,7 +590,7 @@ async def on_message(message):
             except:
                 await message.channel.send('Вы не можете исключить данного пользователя!', delete_after = 15)
         else:
-            await message.channel.send('У Вас недостаточно прав!', delete_after = 15)
+            await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
 
     if msglower.startswith('-purge') or msglower.startswith('-clear'):
         if message.author.guild_permissions.manage_messages or message.author.id == 400231667408699392:
@@ -510,7 +620,7 @@ async def on_message(message):
                 await message.channel.send('Количество сообщений превышает 100!', delete_after = 15)
         else:
             await message.delete()
-            await message.channel.send('Вы не имеете прав на удаление сообщений!', delete_after = 15)
+            await message.channel.send('У вас недостаточно прав на выполнение данной команды!', delete_after = 15)
     
     if msglower.startswith('-roles'):
         if message.author.guild_permissions.manage_roles or message.author.id == 400231667408699392:
@@ -1204,7 +1314,6 @@ async def on_message(message):
             silence = client.get_emoji(597389163096178688)
             panic = client.get_emoji(594496061989584897)
 
-
             try:
                 reason = msg[3]
             except:
@@ -1231,25 +1340,90 @@ async def on_message(message):
                 muted.write('Сервер: {}; Пользователь: {}; Время: {}; Замучен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason))
                 muted.close()
 
+            muterole = discord.Role
+            for r in message.guild.roles:
+                if int(r.permissions.value) == 1049600:
+                    muterole = r
+                    break
+            else:
+                muterole = await message.guild.create_role(
+                    name = 'Muted',
+                    permissions = discord.Permissions(permissions = 1049600),
+                    color = discord.Color.dark_grey(),
+                    reason = 'Роль для мутов'
+                )
+
+            overwrites = {
+                message.guild.default_role: discord.PermissionOverwrite(read_messages = False),
+                message.guild.me: discord.PermissionOverwrite(read_messages = True, send_messages = True, manage_messages = True),
+            }
+            for cat in message.guild.categories:
+                if cat.name == 'kvakep-logs':
+                    kvakeplogs = cat
+                    break
+            else:
+                kvakeplogs = await message.guild.create_category_channel(
+                    name = 'kvakep-logs',
+                    overwrites = overwrites,
+                    reason = 'Category for kvakep\'s logs'
+                )
+            for chan in kvakeplogs.channels:
+                if chan.name == 'mutes':
+                    muteslog = chan
+                    break
+            else:
+                muteslog = await kvakeplogs.create_text_channel(
+                    name = 'mutes',
+                    overwrites = overwrites,
+                    reason = 'Channel for kvakep\'s mutes'
+                )
+
             if reason != '':
                 tomember = discord.Embed(
                     description = 'Вы были замучены {} до {}.\nПричина: {}\n{}'.format(message.author, msgtime, reason, panic),
                     color = discord.Color.dark_red()
                 )
                 tolog = discord.Embed(
-                    description = 'Пользователь {} был заглушён {} {} до {}.\nПричина: {}'.format(member.mention, muteauthor, message.author, msgtime, reason),
+                    description = 'Пользователь {} был заглушён {} {} до {}.\nПричина: {}\n{}'.format(member.mention, muteauthor, message.author.mention, msgtime, reason, silence),
                     color = discord.Color.dark_grey()
                 )
+                await member.addroles(muterole, reason = 'Заглушён {} {}\nПричина: {}'.format(muteauthor, message.author, reason))
             else:
                 tomember = discord.Embed(
                     description = 'Вы были замучены {} до {}.\n{}'.format(message.author, msgtime, panic),
                     color = discord.Color.dark_red()
                 )
                 tolog = discord.Embed(
-                    description = 'Пользователь {} был заглушён {} {} до {}.\n{}'.format(member.mention, muteauthor, message.author, msgtime, silence),
+                    description = 'Пользователь {} был заглушён {} {} до {}.\n{}'.format(member.mention, muteauthor, message.author.mention, msgtime, silence),
                     color = discord.Color.dark_grey()
                 )
+                await member.add_roles(muterole, reason = 'Заглушён {} {}'.format(muteauthor, message.author))
+            
+            await muteslog.send(embed = tolog)
+            await member.send(embed = tomember)
+        else:
+            await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
 
+    if msglower.startswith('-unmute'):
+        await message.delete()
+        if message.author.guild_permissions.mute_members:
+            msg = message.content.split(' ', 2)
+
+            try:
+                member = msg[1]
+                member = member.replace('<', '')
+                member = member.replace('@', '')
+                member = member.replace('>', '')
+                member  = message.guild.get_member(int(member))
+            except:
+                await message.channel.send('Используйте: -unmute [@member/member/id] ([reason])', delete_after = 15)
+                return
+            
+            try:
+                reason = msg[2]
+            except:
+                reason = ''
+            
             overwrites = {
                 message.guild.default_role: discord.PermissionOverwrite(read_messages = False),
                 message.guild.me: discord.PermissionOverwrite(read_messages = True, send_messages = True, manage_messages = True),
@@ -1287,19 +1461,307 @@ async def on_message(message):
                     color = discord.Color.dark_grey(),
                     reason = 'Роль для мутов'
                 )
-            await member.add_roles(muterole, reason = 'Muted')
+            
+            muted = open('kvakepmutedmembers.txt', 'r')
+            lines = muted.readlines()
+            muted.close()
+            for l in range(len(lines)):
+                if 'Пользователь: {}'.format(member.id) in lines[l]:
+                    del lines[l]
+                    m = open('kvakepmutedmembers.txt', 'w')
+                    m.writelines(lines)
+                    m.close()
+                    break
+            else:
+                await message.channel.send('Не найдено!', delete_after = 15)
+                return
+            
+            unmuteauthor = ''
+            if message.author.guild_permissions.administrator:
+                unmuteauthor = 'администратором'
+            else:
+                unmuteauthor = 'модератором'
+
+            funnydogemoji = client.get_emoji(596690644467187723)
+            if reason != '':
+                tolog = discord.Embed(
+                    description = 'С пользователя {} был снят мут {} {}\nПричина: {}'.format(member.mention, unmuteauthor, message.author.mention, reason),
+                    color = discord.Color.dark_blue()
+                )
+                tomember = discord.Embed(
+                    description = 'С Вас был снят мут {} {}\nПричина: {}\n{}'.format(unmuteauthor, message.author, reason, funnydogemoji),
+                    color = discord.Color.dark_green()
+                )
+                await member.remove_roles(muterole, reason = 'Мут снят {} {}\nПричина: {}'.format(unmuteauthor, message.author, reason))
+            else:
+                tolog = discord.Embed(
+                    description = 'С пользователя {} был снят мут {} {}'.format(member.mention, unmuteauthor, message.author.mention),
+                    color = discord.Color.dark_blue()
+                )
+                tomember = discord.Embed(
+                    description = 'С Вас был снят мут {} {}\n {}'.format(unmuteauthor, message.author, funnydogemoji),
+                    color = discord.Color.dark_green()
+                )
+                await member.remove_roles(muterole, reason = 'Мут снят {} {}'.format(unmuteauthor, message.author))
+            
             await muteslog.send(embed = tolog)
+            await message.channel.send('С пользователя {} успешно снят мут! :white_check_mark:'.format(member), delete_after = 15)
             await member.send(embed = tomember)
         else:
-            await message.channel.send('У Вас недостаточно прав!', delete_after = 15)
+            await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
 
-    if msglower.startswith('-mlogs'):
-        try:
-            f = open('kvakepmutedmembers.txt', 'r')
-            lines = f.readlines()
-            await message.channel.send(lines)
-        except Exception as e:
-            await message.channel.send(e)
+    if msglower.startswith('-ban'):
+        if message.author.guild_permissions.kick_members or message.author.id == 400231667408699392:
+            msg = message.content.split(' ', 3)
+            await message.delete()
+
+            try:
+                member = msg[1]
+                member = member.replace('<', '')
+                member = member.replace('>', '')
+                member = member.replace('@', '')
+                member = int(member)
+                member = message.guild.get_member(member)
+            except:
+                await message.channel.send('Используйте: -ban [@member/member_id] [time(2d2m8s)] ([reason])', delete_after = 15)
+                return
+
+            try:
+                time = msg[2]
+                days = re.search(r'\d{1,2}d', time)
+                hours = re.search(r'\d{1,2}h', time)
+                minutes = re.search(r'\d{1,2}m', time)
+                seconds = re.search(r'\d{1,2}s', time)
+                try:
+                    days = days.group(0)
+                    days = days.replace('d', '')
+                    days = int(days)
+                except:
+                    days = 0
+                try:
+                    hours = hours.group(0)
+                    hours = hours.replace('h', '')
+                    hours = int(hours)
+                except:
+                    hours = 0
+                try:
+                    minutes = minutes.group(0)
+                    minutes = minutes.replace('m', '')
+                    minutes = int(minutes)
+                except:
+                    minutes = 0
+                try:
+                    seconds = seconds.group(0)
+                    seconds = seconds.replace('s', '')
+                    seconds = int(seconds)
+                except:
+                    seconds = 0
+                time = datetime.datetime.now() + datetime.timedelta(days = days, hours = hours, minutes = minutes, seconds  = seconds)
+                msgtime = re.match(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', str(time))
+                msgtime = msgtime.group(0)
+            except:
+                await message.channel.send('Используйте: -ban [@member/member_id] [time(2d2m8s)] ([reason])', delete_after = 15)
+                return
+
+            banhammer = client.get_emoji(597496822474342547)
+            panic = client.get_emoji(594496061989584897)
+
+            try:
+                reason = msg[3]
+            except:
+                reason = ''
+
+            banauthor = ''
+            if message.author.guild_permissions.administrator:
+                banauthor = 'администратором'
+            else:
+                banauthor = 'модератором'
+
+            banned = open('kvakepbannedmembers.txt', 'r')
+            lines = banned.readlines()
+            banned.close()
+            for l in range(len(lines)):
+                if 'Пользователь: {}'.format(member.id) in lines[l]:
+                    lines[l] = 'Сервер: {}; Пользователь: {}; Время: {}; Забанен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason)
+                    m = open('kvakepbannedmembers.txt', 'w')
+                    m.writelines(lines)
+                    m.close()
+                    break
+            else:
+                banned = open('kvakepbannedmembers.txt', 'a')
+                banned.write('Сервер: {}; Пользователь: {}; Время: {}; Забанен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason))
+                banned.close()
+
+            banrole = discord.Role
+            for r in message.guild.roles:
+                if int(r.permissions.value) == 512:
+                    banrole = r
+                    break
+            else:
+                banrole = await message.guild.create_role(
+                    name = 'Banned',
+                    permissions = discord.Permissions(permissions = 512),
+                    color = discord.Color.dark_grey(),
+                    reason = 'Роль для банов'
+                )
+
+            overwrites = {
+                message.guild.default_role: discord.PermissionOverwrite(read_messages = False),
+                message.guild.me: discord.PermissionOverwrite(read_messages = True, send_messages = True, manage_messages = True),
+            }
+            for cat in message.guild.categories:
+                if cat.name == 'kvakep-logs':
+                    kvakeplogs = cat
+                    break
+            else:
+                kvakeplogs = await message.guild.create_category_channel(
+                    name = 'kvakep-logs',
+                    overwrites = overwrites,
+                    reason = 'Category for kvakep\'s logs'
+                )
+            for chan in kvakeplogs.channels:
+                if chan.name == 'bans':
+                    banslog = chan
+                    break
+            else:
+                banslog = await kvakeplogs.create_text_channel(
+                    name = 'bans',
+                    overwrites = overwrites,
+                    reason = 'Channel for kvakep\'s bans'
+                )
+
+            if reason != '':
+                tomember = discord.Embed(
+                    description = 'Вы были забанены {} до {}.\nПричина: {}\n{}'.format(message.author, msgtime, reason, panic),
+                    color = discord.Color.dark_red()
+                )
+                tolog = discord.Embed(
+                    description = 'Пользователь {} был забанен {} {} до {}.\nПричина: {}\n{}'.format(member.mention, banauthor, message.author.mention, msgtime, reason, banhammer),
+                    color = discord.Color.dark_grey()
+                )
+                await member.add_roles(banrole, reason = 'Забанен {} {}\nПричина: {}'.format(banauthor, message.author, reason))
+            else:
+                tomember = discord.Embed(
+                    description = 'Вы были забанены {} до {}.\n{}'.format(message.author, msgtime, panic),
+                    color = discord.Color.dark_red()
+                )
+                tolog = discord.Embed(
+                    description = 'Пользователь {} был забанен {} {} до {}.\n{}'.format(member.mention, banauthor, message.author.mention, msgtime, banhammer),
+                    color = discord.Color.dark_grey()
+                )
+                await member.add_roles(banrole, reason = 'Забанен {} {}'.format(banauthor, message.author))
+            
+            await message.channel.send('Пользователь {} был успешно забанен! :white_check_mark:'.format(member), delete_after = 15)
+            await banslog.send(embed = tolog)
+            await member.send(embed = tomember)
+        else:
+            await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
+        
+    if msglower.startswith('-unban'):
+        await message.delete()
+        if message.author.guild_permissions.kick_members:
+            msg = message.content.split(' ', 2)
+
+            try:
+                member = msg[1]
+                member = member.replace('<', '')
+                member = member.replace('@', '')
+                member = member.replace('>', '')
+                member  = message.guild.get_member(int(member))
+            except:
+                await message.channel.send('Используйте: -unban [@member/member/id] ([reason])', delete_after = 15)
+                return
+            
+            try:
+                reason = msg[2]
+            except:
+                reason = ''
+            
+            overwrites = {
+                message.guild.default_role: discord.PermissionOverwrite(read_messages = False),
+                message.guild.me: discord.PermissionOverwrite(read_messages = True, send_messages = True, manage_messages = True),
+            }
+            for cat in message.guild.categories:
+                if cat.name == 'kvakep-logs':
+                    kvakeplogs = cat
+                    break
+            else:
+                kvakeplogs = await message.guild.create_category_channel(
+                    name = 'kvakep-logs',
+                    overwrites = overwrites,
+                    reason = 'Category for kvakep\'s logs'
+                )
+            for chan in kvakeplogs.channels:
+                if chan.name == 'bans':
+                    banslog = chan
+                    break
+            else:
+                banslog = await kvakeplogs.create_text_channel(
+                    name = 'bans',
+                    overwrites = overwrites,
+                    reason = 'Channel for kvakep\'s bans'
+                )
+
+            banrole = discord.Role
+            for r in message.guild.roles:
+                if int(r.permissions.value) == 512:
+                    banrole = r
+                    break
+            else:
+                banrole = await message.guild.create_role(
+                    name = 'Banned',
+                    permissions = discord.Permissions(permissions = 512),
+                    color = discord.Color.dark_grey(),
+                    reason = 'Роль для банов'
+                )
+            
+            banned = open('kvakepbannedmembers.txt', 'r')
+            lines = banned.readlines()
+            banned.close()
+            for l in range(len(lines)):
+                if 'Пользователь: {}'.format(member.id) in lines[l]:
+                    del lines[l]
+                    m = open('kvakepbannedmembers.txt', 'w')
+                    m.writelines(lines)
+                    m.close()
+                    break
+            else:
+                await message.channel.send('Не найдено!', delete_after = 15)
+                return
+            
+            unbanauthor = ''
+            if message.author.guild_permissions.administrator:
+                unbanauthor = 'администратором'
+            else:
+                unbanauthor = 'модератором'
+
+            funnydogemoji = client.get_emoji(596690644467187723)
+            if reason != '':
+                tolog = discord.Embed(
+                    description = 'С пользователя {} был снят бан {} {}\nПричина: {}'.format(member.mention, unbanauthor, message.author.mention, reason),
+                    color = discord.Color.dark_blue()
+                )
+                tomember = discord.Embed(
+                    description = 'С Вас был снят бан {} {}\nПричина: {}\n{}'.format(unbanauthor, message.author, reason, funnydogemoji),
+                    color = discord.Color.dark_green()
+                )
+                await member.remove_roles(banrole, reason = 'Бан снят {} {}\nПричина: {}'.format(unbanauthor, message.author, reason))
+            else:
+                tolog = discord.Embed(
+                    description = 'С пользователя {} был снят бан {} {}'.format(member.mention, unbanauthor, message.author.mention),
+                    color = discord.Color.dark_blue()
+                )
+                tomember = discord.Embed(
+                    description = 'С Вас был снят бан {} {}\n {}'.format(unbanauthor, message.author, funnydogemoji),
+                    color = discord.Color.dark_green()
+                )
+                await member.remove_roles(banrole, reason = 'Бан снят {} {}'.format(unbanauthor, message.author))
+            
+            await banslog.send(embed = tolog)
+            await message.channel.send('С пользователя {} успешно снят бан! :white_check_mark:'.format(member), delete_after = 15)
+            await member.send(embed = tomember)
+        else:
+            await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
 
 
 
