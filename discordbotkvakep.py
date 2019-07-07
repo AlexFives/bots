@@ -1144,7 +1144,7 @@ async def on_message(message):
         await msg.edit(content = 'Задержка: **{}** ms! {}'.format(ping, pingemoji), delete_after = 15)
 
     if msglower.startswith('-mute'):
-        if message.author.guild_permissions.mute_members or message.author.id == 400231667408699392:
+        try:
             msg = message.content.split(' ', 3)
             await message.delete()
 
@@ -1184,17 +1184,15 @@ async def on_message(message):
             except:
                 seconds = 0
             time = datetime.datetime.now() + datetime.timedelta(days = days, hours = hours, minutes = minutes, seconds  = seconds)
-            print(time)
+
             try:
                 reason = msg[3]
             except:
                 reason = ''
-            try:
-                muted = open('kvakepmutedmembers.txt', 'a')
-                muted.write('Сервер: {}; Пользователь: {}; Время: {}; Замучен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason))
-                muted.close()
-            except Exception as e:
-                await message.channel.send(e)
+
+            muted = open('kvakepmutedmembers.txt', 'a')
+            muted.write('Сервер: {}; Пользователь: {}; Время: {}; Замучен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason))
+            muted.close()
 
             muteemb = discord.Embed(
                 description = 'Вы были замучены {} на {}.'.format(message.author, msgtime),
@@ -1220,7 +1218,8 @@ async def on_message(message):
             await member.add_roles(muterole, reason = 'Muted')
             await message.channel.send(embed = incha)
             await member.send(embed = muteemb)
-
+        except Exception as e:
+            await message.channel.send(content = e)
 
 
 @client.event
