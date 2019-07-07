@@ -101,6 +101,35 @@ async def mute_check():
                                     color = discord.Color.dark_grey(),
                                     reason = 'Роль для мутов'
                                 )
+                            
+                            for cat in guild.categories:
+                                if cat.name == 'kvakep-logs':
+                                    kvakeplogs = cat
+                                    break
+                            else:
+                                kvakeplogs = await guild.create_category_channel(
+                                    name = 'kvakep-logs',
+                                    overwrites = overwrites,
+                                    reason = 'Category for kvakep\'s logs'
+                                )
+                            for chan in kvakeplogs.channels:
+                                if chan.name == 'mutes':
+                                    muteslog = chan
+                                    break
+                            else:
+                                muteslog = await kvakeplogs.create_text_channel(
+                                    name = 'mutes',
+                                    overwrites = overwrites,
+                                    reason = 'Channel for kvakep\'s mutes'
+                                )
+
+                            funnydogemoji = client.get_emoji(596690644467187723)
+                            unmuteembed = discord.Embed(
+                                description = 'С пользователя {} был снят мут!\n{}'.format(member.mention, funnydogemoji),
+                                color = discord.Color.dark_green()
+                            )
+
+                            await muteslog.send(embed = unmuteembed)
                             await member.remove_roles(muterole, reason = 'Unmute')
                             await member.send(embed = unmute)
                         else:
@@ -1193,7 +1222,7 @@ async def on_message(message):
             for l in range(len(lines)):
                 if 'Пользователь: {}'.format(member.id) in lines[l]:
                     lines[l] = 'Сервер: {}; Пользователь: {}; Время: {}; Замучен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason)
-                    m = open('kvakepmutedmembers.txt', 'a')
+                    m = open('kvakepmutedmembers.txt', 'w')
                     m.writelines(lines)
                     m.close()
                     break
@@ -1208,7 +1237,7 @@ async def on_message(message):
                     color = discord.Color.dark_red()
                 )
                 tolog = discord.Embed(
-                    description = 'Пользователь {} был заглушён {} {} до {}.\nПричина: {}'.format(member, muteauthor, message.author, msgtime, reason),
+                    description = 'Пользователь {} был заглушён {} {} до {}.\nПричина: {}'.format(member.mention, muteauthor, message.author, msgtime, reason),
                     color = discord.Color.dark_grey()
                 )
             else:
@@ -1217,7 +1246,7 @@ async def on_message(message):
                     color = discord.Color.dark_red()
                 )
                 tolog = discord.Embed(
-                    description = 'Пользователь {} был заглушён {} {} до {}.\n{}'.format(member, muteauthor, message.author, msgtime, silence),
+                    description = 'Пользователь {} был заглушён {} {} до {}.\n{}'.format(member.mention, muteauthor, message.author, msgtime, silence),
                     color = discord.Color.dark_grey()
                 )
 
