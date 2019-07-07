@@ -370,112 +370,82 @@ async def on_message(message):
         await message.channel.send(embed = ava)
 
     if msglower.startswith('-kick'):
-        try:
-            if message.author.guild_permissions.kick_members or message.author.id == 400231667408699392:
-                ments = message.mentions
-                reasonsearch = message.content.split(' ', 2)
-                await message.delete()
-                if len(ments) == 0:
-                    await message.channel.send('Укажите пользователя!\nИспользуйте: -kick [@member] ([reason])', delete_after = 15)
-                elif len(ments) >= 2:
-                    await message.channel.send('Укажите одного пользователя!\nИспользуйте: -kick [@member] ([reason])', delete_after = 15)
+        if message.author.guild_permissions.kick_members or message.author.id == 400231667408699392:
+            await message.delete()
+            try:
+                msg = message.content.split(' ')
+
+                try:
+                    member = msg[1]
+                    member = member.replace('', '')
+                    member = member.replace('', '')
+                    member = member.replace('', '')
+                    member = int(member)
+                except:
+                    await message.channel.send('Используйте: -kick [@member/member_id] ([reason])')
+                
+                try:
+                    reason = msg[2]
+                except:
+                    reason = ''
+                
+                kvakeplogs = discord.CategoryChannel
+                overwrites = {
+                    message.guild.default_role: discord.PermissionOverwrite(read_messages = False),
+                    message.guild.me: discord.PermissionOverwrite(read_messages = True, send_messages = True, manage_messages = True),
+                }
+                for cat in message.guild.categories:
+                    if cat.name == 'kvakep-logs':
+                        kvakeplogs = cat
+                        break
                 else:
-                    memid = ments[0]
-                    invitation = await message.channel.create_invite(reason = 'After kick',
-                        max_age = 0,
-                        max_uses = 1
+                    kvakeplogs = await message.guild.create_category_channel(
+                        name = 'kvakep-logs',
+                        overwrites = overwrites,
+                        reason = 'Category for kvakep\'s logs'
                     )
-                    if message.author.guild_permissions.administrator:
-                        role = 'администратором'
-                    else:
-                        role = 'модератором'
-                    realen = len(reasonsearch)
-                    if realen == 2:
-                        kickemb = discord.Embed(
-                            description = 'Пользователь {0.name}\nбыл исключён {1}\n{2}'.format(memid, role, message.author),
-                            color = 0xff0000
-                        )
-                        kickemb.set_thumbnail(url = 'https://i.imgur.com/4joHsBt.png')
-                        kickallert = discord.Embed(
-                            description = 'Вы были исключены {0}\n{1.name}'.format(role, message.author),
-                            color = 0xc0c0c0
-                        )
-                        kickallert.set_thumbnail(url = 'https://i.imgur.com/y0vBNv7.png')
-                        channels = message.guild.text_channels
-                        kick = None
-                        for j in range(len(channels)):
-                            if str(channels[j]) == 'kicks':
-                                kick = channels[j]
-                        if kick in channels:
-                            await kick.send(embed = kickemb)
-                            await memid.kick()
-                            await memid.send(embed = kickallert, content = invitation)
-                        else:
-                            overwrites = {  
-                            message.guild.default_role: discord.PermissionOverwrite(read_messages=False),  
-                            message.guild.me: discord.PermissionOverwrite(read_messages=True),  
-                            }  
-                            kvakeplogs = await message.guild.create_category(name = 'kvakep-logs')
-                            await message.guild.create_text_channel(
-                                name = 'kicks',
-                                overwrites = overwrites,
-                                category = kvakeplogs,
-                                position = 0,
-                                reason = 'Channel for kick-logs of {0.user}'.format(client)
-                            )
-                            channels = message.guild.text_channels
-                            for j in range(len(channels)):
-                                if str(channels[j]) == 'kicks':
-                                    kick = channels[j]
-                                    await kick.send(embed = kickemb)
-                                    await memid.kick()
-                                    await memid.send(embed = kickallert, content = invitation)
-                    else:
-                        rea = reasonsearch[2]
-                        kickemb = discord.Embed(
-                            description = 'Пользователь {0.name}\nбыл исключён {1}\n{2}\nпо причине:\n{3}'.format(memid, role, message.author, rea),
-                            color = 0xff0000
-                        )
-                        kickemb.set_thumbnail(url = 'https://i.imgur.com/4joHsBt.png')
-                        kickallert = discord.Embed(
-                            description = 'Вы были исключены {0}\n{1.name}\nпо причине:\n{2}'.format(role, message.author, rea),
-                            color = 0xc0c0c0
-                        )
-                        kickallert.set_thumbnail(url = 'https://i.imgur.com/y0vBNv7.png')
-                        channels = message.guild.text_channels
-                        kick = None
-                        for j in range(len(channels)):
-                            if str(channels[j]) == 'kicks':
-                                kick = channels[j]
-                        if kick in channels:
-                            await kick.send(embed = kickemb)
-                            await memid.kick()
-                            await memid.send(embed = kickallert, content = invitation)
-                        else:
-                            overwrites = {  
-                            message.guild.default_role: discord.PermissionOverwrite(read_messages=False),  
-                            message.guild.me: discord.PermissionOverwrite(read_messages=True),  
-                            }  
-                            kvakeplogs = await message.guild.create_category(name = 'kvakep-logs')
-                            await message.guild.create_text_channel(
-                                name = 'kicks',
-                                overwrites = overwrites,
-                                category = kvakeplogs,
-                                position = 0,
-                                reason = 'Channel for kick-logs of {0.user}'.format(client)
-                            )
-                            channels = message.guild.text_channels
-                            for j in range(len(channels)):
-                                if str(channels[j]) == 'kicks':
-                                    kick = channels[j]
-                                    await kick.send(embed = kickemb)
-                                    await memid.kick()
-                                    await memid.send(embed = kickallert, content = invitation)
-            else:
-                await message.delete()
-                await message.channel.send('Вы не имеете прав на исключение участников!', delete_after = 15)        
-        except:
-            await message.channel.send('Вы не можете исключить данного пользователя!', delete_after = 15)
+                for chan in kvakeplogs.channels:
+                    if chan.name = 'kicks':
+                        kickslog = chan
+                        break
+                else:
+                    kickslog = await kvakeplogs.create_text_channel(
+                        name = 'kicks',
+                        overwrites = overwrites,
+                        reason = 'Channel for kvakep\'s kicks'
+                    )
+
+                if message.author.guild_permissions.administrator:
+                    kickauthor = 'администратором'
+                else:
+                    kickauthor = 'модератором'
+
+                if reason != '':
+                    tologs = discord.Embed(
+                        description = 'Пользователь {} был исключён {} {}.\nПричина: {}'.format(member, kickauthor, message.author, reason),
+                        color = discord.Color.dark_grey()
+                    )
+                    tomember = discord.Embed(
+                        description = 'Вы были исключены {} {}.\nПричина: {}'.format(kickauthor, message.author, reason)
+                    )
+                else:
+                    tologs = discord.Embed(
+                        description = 'Пользователь {} был исключён {} {}.'.format(member, kickauthor, message.author),
+                        color = discord.Color.dark_grey()
+                    )
+                    tomember = discord.Embed(
+                        description = 'Вы были исключены {} {}.'.format(kickauthor, message.author)
+                    )
+                
+                invitation = message.channel.create_invite(max_uses = 1, reason = 'After kick')
+
+                await message.channel.send('Пользователь {} был успешно исключён! :white_check_mark:'.format(member), delete_after = 15)
+                await kickslog.send(embed = tologs)
+                await member.send(content = invitation.url, embed = tomember)
+            except:
+                await message.channel.send('Вы не можете исключить данного пользователя!', delete_after = 15)
+        else:
+            await message.channel.send('У Вас недостаточно прав!', delete_after = 15)
 
     if msglower.startswith('-purge') or msglower.startswith('-clear'):
         if message.author.guild_permissions.manage_messages or message.author.id == 400231667408699392:
@@ -1144,64 +1114,115 @@ async def on_message(message):
         await msg.edit(content = 'Задержка: **{}** ms! {}'.format(ping, pingemoji), delete_after = 15)
 
     if msglower.startswith('-mute'):
-        try:
+        if message.author.guild_permissions.mute_members or message.author.id == 400231667408699392:
             msg = message.content.split(' ', 3)
             await message.delete()
 
-            member = msg[1]
-            member = member.replace('<', '')
-            member = member.replace('>', '')
-            member = member.replace('@', '')
-            member = message.guild.get_member(int(member))
+            try:
+                member = msg[1]
+                member = member.replace('<', '')
+                member = member.replace('>', '')
+                member = member.replace('@', '')
+                member = message.guild.get_member(int(member))
+            except:
+                await message.channel.send('Используйте: -mute [@member/member_id] [time(2d2m8s)] ([reason])', delete_after = 15)
             
-            time = msg[2]
-            days = re.search(r'\d{1,2}d', time)
-            hours = re.search(r'\d{1,2}h', time)
-            minutes = re.search(r'\d{1,2}m', time)
-            seconds = re.search(r'\d{1,2}s', time)
             try:
-                days = days.group(0)
-                days = days.replace('d', '')
-                days = int(days)
+                time = msg[2]
+                days = re.search(r'\d{1,2}d', time)
+                hours = re.search(r'\d{1,2}h', time)
+                minutes = re.search(r'\d{1,2}m', time)
+                seconds = re.search(r'\d{1,2}s', time)
+                try:
+                    days = days.group(0)
+                    days = days.replace('d', '')
+                    days = int(days)
+                except:
+                    days = 0
+                try:
+                    hours = hours.group(0)
+                    hours = hours.replace('h', '')
+                    hours = int(hours)
+                except:
+                    hours = 0
+                try:
+                    minutes = minutes.group(0)
+                    minutes = minutes.replace('m', '')
+                    minutes = int(minutes)
+                except:
+                    minutes = 0
+                try:
+                    seconds = seconds.group(0)
+                    seconds = seconds.replace('s', '')
+                    seconds = int(seconds)
+                except:
+                    seconds = 0
+                time = datetime.datetime.now() + datetime.timedelta(days = days, hours = hours, minutes = minutes, seconds  = seconds)
             except:
-                days = 0
-            try:
-                hours = hours.group(0)
-                hours = hours.replace('h', '')
-                hours = int(hours)
-            except:
-                hours = 0
-            try:
-                minutes = minutes.group(0)
-                minutes = minutes.replace('m', '')
-                minutes = int(minutes)
-            except:
-                minutes = 0
-            try:
-                seconds = seconds.group(0)
-                seconds = seconds.replace('s', '')
-                seconds = int(seconds)
-            except:
-                seconds = 0
-            time = datetime.datetime.now() + datetime.timedelta(days = days, hours = hours, minutes = minutes, seconds  = seconds)
+                await message.channel.send('Используйте: -mute [@member/member_id] [time(2d2m8s)] ([reason])', delete_after = 15)
+
+            silence = client.get_emoji(597389163096178688)
+            panic = client.get_emoji(594496061989584897)
+
 
             try:
                 reason = msg[3]
             except:
                 reason = ''
 
+            muteauthor = ''
+            if message.author.guild_permissions.administrator:
+                muteauthor = 'администратором'
+            else:
+                muteauthor = 'модератором'
+
             muted = open('kvakepmutedmembers.txt', 'a')
             muted.write('Сервер: {}; Пользователь: {}; Время: {}; Замучен: {}; Причина: {}\n'.format(message.guild.id, member.id, time, message.author.id, reason))
             muted.close()
 
-            muteemb = discord.Embed(
-                description = 'Вы были замучены {} на {}.'.format(message.author, time),
-                color = discord.Color.dark_grey()
-            )
-            incha = discord.Embed(
-                description = 'Пользователю {} успешно выдан мут!'.format(member),
-                color = discord.Color.dark_green()
-            )
+            if reason != '':
+                tomember = discord.Embed(
+                    description = 'Вы были замучены {} на {}.\nПричина: {}\n{}'.format(message.author, time, panic),
+                    color = discord.Color.dark_red()
+                )
+                tolog = discord.Embed(
+                    description = 'Пользователь {} был заглушён {} {} на {}.\nПричина: {}'.format(member, muteauthor, message.author, time, reason),
+                    color = discord.Color.dark_grey()
+                )
+            else:
+                tomember = discord.Embed(
+                    description = 'Вы были замучены {} на {}.\n{}'.format(message.author, time, panic),
+                    color = discord.Color.dark_red()
+                )
+                tolog = discord.Embed(
+                    description = 'Пользователь {} был заглушён {} {} на {}.\n{}'.format(member, muteauthor, message.author, time, silence),
+                    color = discord.Color.dark_grey()
+                )
+
+            overwrites = {
+                message.guild.default_role: discord.PermissionOverwrite(read_messages = False),
+                message.guild.me: discord.PermissionOverwrite(read_messages = True, send_messages = True, manage_messages = True),
+            }
+            for cat in message.guild.categories:
+                if cat.name == 'kvakep-logs':
+                    kvakeplogs = cat
+                    break
+            else:
+                kvakeplogs = await message.guild.create_category_channel(
+                    name = 'kvakep-logs',
+                    overwrites = overwrites,
+                    reason = 'Category for kvakep\'s logs'
+                )
+            for chan in kvakeplogs.channels:
+                if chan.name = 'mutes':
+                    muteslog = chan
+                    break
+            else:
+                muteslog = await kvakeplogs.create_text_channel(
+                    name = 'mutes',
+                    overwrites = overwrites,
+                    reason = 'Channel for kvakep\'s mutes'
+                )
 
             muterole = discord.Role
             for r in message.guild.roles:
@@ -1216,10 +1237,11 @@ async def on_message(message):
                     reason = 'Роль для мутов'
                 )
             await member.add_roles(muterole, reason = 'Muted')
-            await message.channel.send(embed = incha)
-            await member.send(embed = muteemb)
-        except Exception as e:
-            await message.channel.send(content = e)
+            await muteslog.send(embed = tolog)
+            await member.send(embed = tomember)
+        else:
+            await message.channel.send('У Вас недостаточно прав!', delete_after = 15)
+
 
 
 @client.event
