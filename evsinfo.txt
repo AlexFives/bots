@@ -1,0 +1,6 @@
+Стат: hp; Дают: Nidoran(Ж), Slowpoke, Grimer, Vaporeon, Marill, Phanpy;
+Стат: atk; Дают: Ekans, Nidoran(М), Machop, Krabby, Kingler, Goldeen, Seaking, Larvitar, Poochyena, Trapinch, Corphish, Crawdaunt, Shinx, Sandile, Pawniard, Bisharp;
+Стат: def; Дают: Sandshrew, Geodude, Shellder, Onix, Cubone, Marowak, Magcargo, Pelipper, Bronzor, Skorupi, Sewaddle, Swadloon, Venipede, Klink, Klang;
+Стат: spa; Дают: Oddish, Psyduck, Golduck, Abra, Gastly, Slugma, Glaceon;
+Стат: spd; Дают: Tentacool, Tentacruel, Seel, Mantine, Duskull, Dewpider;
+Стат: spe; Дают: Rattata, Raticate, Pikachu, Zubat, Golbat, Diglett, Meowth, Poliwag, Poliwhirl, Ponyta, Staryu, Magikarp, Electrike, Pachirisu, Blitzle, Woobat, Swoobat, Froakie, Frogadier, Helioptile, Salandit, Salazzle;
