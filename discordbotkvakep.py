@@ -1247,8 +1247,8 @@ async def on_message(message):
             f = open('kvakepmutedmembers.txt', 'r')
             lines = f.readlines()
             await message.channel.send(lines)
-        except FileNotFoundError:
-            await message.channel.send('File Not Found')
+        except Exception as e:
+            await message.channel.send(e)
 
 
 
