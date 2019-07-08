@@ -27,10 +27,14 @@ topfact10 = ''
 
 
 client = discord.Client()
-
-
-
-async def mute_check():
+"""
+ xxxxxx   xxx   xxx  xxxxxxxx   xxxxxx   xxx   xxx      ################
+xxx    x  xxx   xxx  xxxx      xxx    x  xxx  xxx       ################
+xxx       xxxxxxxxx  xxxxxxxx  xxx       xxxxxxx        ################
+xxx    x  xxx   xxx  xxxx      xxx    x  xxx  xxx       ################
+ xxxxxx   xxx   xxx  xxxxxxxx   xxxxxx   xxx   xxx      ################
+"""
+async def punish_check():
     while True:
         with open('kvakepmutedmembers.txt', 'r') as fin:
             with open('kvakepmutedmembersnew.txt', 'w') as fout:
@@ -80,12 +84,6 @@ async def mute_check():
                             member = member.replace(';', '')
                             member = guild.get_member(int(member))
 
-                            unmute = discord.Embed(
-                                title = 'Хорошая новость!',
-                                description = 'С Вас был снят мут!',
-                                color = discord.Color.gold()
-                            )
-
                             for r in guild.roles:
                                 if int(r.permissions.value) == 1049600:
                                     muterole = r
@@ -118,16 +116,99 @@ async def mute_check():
                                     overwrites = overwrites,
                                     reason = 'Channel for kvakep\'s mutes'
                                 )
+                            
+                            timenow = datetime.datetime.today()
+                            year = timenow.year
+                            month = timenow.month
+                            if month == 1:
+                                month = 'января'
+                            elif month == 2:
+                                month = 'февраля'
+                            elif month == 3:
+                                month = 'марта'
+                            elif month == 4:
+                                month = 'апреля'
+                            elif month == 5:
+                                month = 'мая'
+                            elif month == 6:
+                                month = 'июня'
+                            elif month == 7:
+                                month = 'июля'
+                            elif month == 8:
+                                month = 'августа'
+                            elif month == 9:
+                                month = 'сентября'
+                            elif month == 10:
+                                month = 'октября'
+                            elif month == 11:
+                                month = 'ноября'
+                            elif month == 12:
+                                month = 'декабря'
+                            day = timenow.day
+                            hour = timenow.hour
+                            if hour == 1:
+                                hour = '01'
+                            elif hour == 2:
+                                hour = '02'
+                            elif hour == 3:
+                                hour = '03'
+                            elif hour == 4:
+                                hour = '04'
+                            elif hour == 5:
+                                hour = '05'
+                            elif hour == 6:
+                                hour = '06'
+                            elif hour == 7:
+                                hour = '07'
+                            elif hour == 8:
+                                hour = '08'
+                            elif hour == 9:
+                                hour = '09'
+                            elif hour == 0:
+                                hour = '00'
+                            minute = timenow.minute
+                            if minute == 0:
+                                minute = '00'
+                            elif minute == 1:
+                                minute == '01'
+                            elif minute == 2:
+                                minute == '02'
+                            elif minute == 3:
+                                minute == '03'
+                            elif minute == 4:
+                                minute == '04'
+                            elif minute == 5:
+                                minute == '05'
+                            elif minute == 6:
+                                minute == '06'
+                            elif minute == 7:
+                                minute == '07'
+                            elif minute == 8:
+                                minute == '08'
+                            elif minute == 9:
+                                minute == '09'
+                            timenow = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
 
                             funnydogemoji = client.get_emoji(596690644467187723)
-                            unmuteembed = discord.Embed(
+                            unmutetolog = discord.Embed(
                                 description = 'С пользователя {} был снят мут!\n{}'.format(member.mention, funnydogemoji),
                                 color = discord.Color.dark_green()
                             )
+                            unmutetolog.set_footer(
+                                text = timenow
+                            )
+                            unmutetomember = discord.Embed(
+                                title = 'Хорошая новость!',
+                                description = 'С Вас был снят мут!',
+                                color = discord.Color.gold()
+                            )
+                            unmutetomember.set_footer(
+                                text = timenow
+                            )
 
-                            await muteslog.send(embed = unmuteembed)
+                            await muteslog.send(embed = unmutetolog)
                             await member.remove_roles(muterole, reason = 'Unmute')
-                            await member.send(embed = unmute)
+                            await member.send(embed = unmutetomember)
                         else:
                             fout.write(line)
                     except:
@@ -188,12 +269,6 @@ async def mute_check():
                             member = member.replace(';', '')
                             member = guild.get_member(int(member))
 
-                            unban = discord.Embed(
-                                title = 'Хорошая новость!',
-                                description = 'С Вас был снят бан!',
-                                color = discord.Color.gold()
-                            )
-
                             for r in guild.roles:
                                 if int(r.permissions.value) == 512:
                                     banrole = r
@@ -227,10 +302,93 @@ async def mute_check():
                                     reason = 'Channel for kvakep\'s bans'
                                 )
 
+                            timenow = datetime.datetime.today()
+                            year = timenow.year
+                            month = timenow.month
+                            if month == 1:
+                                month = 'января'
+                            elif month == 2:
+                                month = 'февраля'
+                            elif month == 3:
+                                month = 'марта'
+                            elif month == 4:
+                                month = 'апреля'
+                            elif month == 5:
+                                month = 'мая'
+                            elif month == 6:
+                                month = 'июня'
+                            elif month == 7:
+                                month = 'июля'
+                            elif month == 8:
+                                month = 'августа'
+                            elif month == 9:
+                                month = 'сентября'
+                            elif month == 10:
+                                month = 'октября'
+                            elif month == 11:
+                                month = 'ноября'
+                            elif month == 12:
+                                month = 'декабря'
+                            day = timenow.day
+                            hour = timenow.hour
+                            if hour == 1:
+                                hour = '01'
+                            elif hour == 2:
+                                hour = '02'
+                            elif hour == 3:
+                                hour = '03'
+                            elif hour == 4:
+                                hour = '04'
+                            elif hour == 5:
+                                hour = '05'
+                            elif hour == 6:
+                                hour = '06'
+                            elif hour == 7:
+                                hour = '07'
+                            elif hour == 8:
+                                hour = '08'
+                            elif hour == 9:
+                                hour = '09'
+                            elif hour == 0:
+                                hour = '00'
+                            minute = timenow.minute
+                            if minute == 0:
+                                minute = '00'
+                            elif minute == 1:
+                                minute == '01'
+                            elif minute == 2:
+                                minute == '02'
+                            elif minute == 3:
+                                minute == '03'
+                            elif minute == 4:
+                                minute == '04'
+                            elif minute == 5:
+                                minute == '05'
+                            elif minute == 6:
+                                minute == '06'
+                            elif minute == 7:
+                                minute == '07'
+                            elif minute == 8:
+                                minute == '08'
+                            elif minute == 9:
+                                minute == '09'
+                            timenow = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
+
                             funnydogemoji = client.get_emoji(596690644467187723)
                             unbanembed = discord.Embed(
                                 description = 'С пользователя {} был снят бан!\n{}'.format(member.mention, funnydogemoji),
                                 color = discord.Color.dark_green()
+                            )
+                            unbanembed.set_footer(
+                                text = timenow
+                            )
+                            unban = discord.Embed(
+                                title = 'Хорошая новость!',
+                                description = 'С Вас был снят бан!',
+                                color = discord.Color.gold()
+                            )
+                            unban.set_footer(
+                                text = timenow
                             )
 
                             await banslog.send(embed = unbanembed)
@@ -248,9 +406,13 @@ async def mute_check():
         except:
             pass
         await asyncio.sleep(10)
-
-
-
+"""
+ xxxxxxx   xxxxx    xxx      xxxxxxx    xxxxxxxx    xxxxxx  xxxxxxx   xx   xx      ################
+xxx   xxx  xxx xx   xxx      xxx   xx   xxxx       xx   xx  xxx   xx  xx   xx      ################
+xxx   xxx  xxx  xx  xxx      xxxxxxx    xxxxxxxx  xxxxxxxx  xxx   xx   xxxxxx      ################
+xxx   xxx  xxx   xx xxx      xxx   xx   xxxx      xx    xx  xxx   xx       xx      ################
+ xxxxxxx   xxx    xxxxx      xxx    xx  xxxxxxxx  xx    xx  xxxxxxx    xxxxx       ################
+"""
 @client.event
 async def on_ready():
     print('{0.user} is ready!'.format(client))
@@ -259,8 +421,13 @@ async def on_ready():
     loop = asyncio.get_event_loop()
     asyncio.ensure_future(mute_check())
 
-
-
+"""
+ xxxxxxx   xxxxx    xxx      xxxxx     xxxxx  xxxxxxx   xxxxxxxxxx      ################
+xxx   xxx  xxx xx   xxx      xxx xx   xx xxx  xxx      xx        x      ################
+xxx   xxx  xxx  xx  xxx      xxx  xx xx  xxx  xxxxxxx  xx  xxxxx        ################
+xxx   xxx  xxx   xx xxx      xxx   xxx   xxx      xxx  xx  xx  xx       ################
+ xxxxxxx   xxx    xxxxx      xxx         xxx  xxxxxxx   xxxxxxxxx       ################
+"""
 @client.event
 async def on_message(message):
 
@@ -268,7 +435,11 @@ async def on_message(message):
 
     if message.author == client.user:
         return
-#help
+#000   000  00000000  000       000000
+#000   000  0000      000       000  00
+#000000000  00000000  000       000000
+#000   000  0000      0000      000
+#000   000  00000000  00000000  000
     if msglower.startswith('-help'):
         await message.delete()
         embed=discord.Embed(title="**Help:**", description="Здесь Вы можете просмотреть список моих команд.", color=0x00ff80)
@@ -309,7 +480,11 @@ async def on_message(message):
             url='https://i.imgur.com/PkP3JUE.png'
         )
         await message.channel.send(embed=embed)
-#lovelist
+#000       000
+#000       000
+#000       000
+#0000      0000
+#00000000  00000000
     if msglower.startswith('-lovelist') or msglower.startswith('-ll'):
         await message.delete()
         embed=discord.Embed(title='***___Список любимых игроков сервера:___***', color=0x0a4a76)
@@ -347,7 +522,11 @@ async def on_message(message):
             text='made by {}'.format(client.get_user(499284863686279201))
         )
         await message.channel.send(embed=embed)
-#flip
+#0000000000  000       0000  000000
+#000         000        00   000  00
+#0000000     000        00   000000
+#000         0000       00   000
+#000         00000000  0000  000
     if msglower.startswith('-flip'):
         await message.delete()
         orel1 = client.get_emoji(596784734571593748)
@@ -369,7 +548,11 @@ async def on_message(message):
         flp.set_thumbnail(url = flip)
         m = await message.channel.send(embed = flp)
         await m.add_reaction(emoji)
-#evs
+#00000000  00   00  0000000
+#0000      00   00  000
+#00000000  00   00  0000000
+#0000       00 00       000
+#00000000    000    0000000
     if msglower.startswith('-evs'):
         await message.delete()
         msg = message.content.split(' ')
@@ -608,7 +791,11 @@ async def on_message(message):
                     color = discord.Color.dark_magenta()
                 )
                 await message.channel.send(embed = fail, delete_after = 15)
-#topfact
+#0000000000  0000000000
+#0   00   0  000
+#    00      0000000
+#    00      000
+#    00      000
     if msglower.startswith('-topfact') or msglower.startswith('-tf'):
         colour = random.choice([0xff0000, 0xff8000, 0xffff00, 0x00ff00, 0x00ffff, 0x032ef8, 0x800080])
         topfact = random.choice([topfact1, topfact2, topfact3, topfact4, topfact5, topfact6])
@@ -622,7 +809,11 @@ async def on_message(message):
         )
         await message.delete()
         await message.channel.send(embed=topemb)
-
+#0000000    000000  00   00
+#000       00   00  00   00
+#0000000  00000000   000000
+#    000  00    00       00
+#0000000  00    00   00000
     if msglower.startswith('-say'):
         if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
             await message.delete()
@@ -642,7 +833,11 @@ async def on_message(message):
                 await message.channel.send(embed = semb)
             except:
                 await message.channel.send('Используйте: -say [message]', delete_after = 15)               
-
+#00             00  000    000  0000  0000000  000000   00000000  0000000
+# 00           00   000    000   00   000      000  00  0000      000   00
+#  00   000   00    0000000000   00   0000000  000000   00000000  0000000
+#   00 00 00 00     000    000   00       000  000      0000      000   00
+#    000   000      000    000  0000  0000000  000      00000000  000    00
     if msglower.startswith('-whisper'):
         if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
             whisper = message.content.split(' ', 2)
@@ -662,7 +857,11 @@ async def on_message(message):
                 await member.send(msg)
             except:
                 await message.channel.send('Используйте: -whisper [@member/member_id] [message]', delete_after = 15)
-
+#  000000  00   00    000000
+# 00   00  00   00   00   00
+#00000000  00   00  00000000
+#00    00   00 00   00    00
+#00    00    000    00    00
     if msglower.startswith('-ava'):
         colour = random.choice([0xff0000, 0xff8000, 0xffff00, 0x00ff00, 0x00ffff, 0x032ef8, 0x800080])
         msg = message.content.split(' ')
@@ -684,7 +883,11 @@ async def on_message(message):
             icon_url = 'https://i.imgur.com/Ojia4Ni.png'
         )
         await message.channel.send(embed = ava)
-
+#000   000  0000   000000   000   000
+#000  000    00   000    0  000  000
+#0000000     00   000       0000000
+#000  000    00   000    0  000  000
+#000   000  0000   000000   000   000
     if msglower.startswith('-kick'):
         if message.author.guild_permissions.kick_members or message.author.id == 400231667408699392:
             await message.delete()
@@ -738,10 +941,85 @@ async def on_message(message):
                 else:
                     kickauthor = 'модератором'
 
+                timenow = datetime.datetime.today()
+                year = timenow.year
+                month = timenow.month
+                if month == 1:
+                    month = 'января'
+                elif month == 2:
+                    month = 'февраля'
+                elif month == 3:
+                    month = 'марта'
+                elif month == 4:
+                    month = 'апреля'
+                elif month == 5:
+                    month = 'мая'
+                elif month == 6:
+                    month = 'июня'
+                elif month == 7:
+                    month = 'июля'
+                elif month == 8:
+                    month = 'августа'
+                elif month == 9:
+                    month = 'сентября'
+                elif month == 10:
+                    month = 'октября'
+                elif month == 11:
+                    month = 'ноября'
+                elif month == 12:
+                    month = 'декабря'
+                day = timenow.day
+                hour = timenow.hour
+                if hour == 1:
+                    hour = '01'
+                elif hour == 2:
+                    hour = '02'
+                elif hour == 3:
+                    hour = '03'
+                elif hour == 4:
+                    hour = '04'
+                elif hour == 5:
+                    hour = '05'
+                elif hour == 6:
+                    hour = '06'
+                elif hour == 7:
+                    hour = '07'
+                elif hour == 8:
+                    hour = '08'
+                elif hour == 9:
+                    hour = '09'
+                elif hour == 0:
+                    hour = '00'
+                minute = timenow.minute
+                if minute == 0:
+                    minute = '00'
+                elif minute == 1:
+                    minute == '01'
+                elif minute == 2:
+                    minute == '02'
+                elif minute == 3:
+                    minute == '03'
+                elif minute == 4:
+                    minute == '04'
+                elif minute == 5:
+                    minute == '05'
+                elif minute == 6:
+                    minute == '06'
+                elif minute == 7:
+                    minute == '07'
+                elif minute == 8:
+                    minute == '08'
+                elif minute == 9:
+                    minute == '09'
+                timenow = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
+
                 if reason != '':
                     tologs = discord.Embed(
                         description = 'Пользователь {} был исключён {} {}.\nПричина: {}'.format(member, kickauthor, message.author, reason),
                         color = discord.Color.dark_grey()
+                    )
+                    tologs.set_footer(
+                        text = timenow
                     )
                     tomember = discord.Embed(
                         description = 'Вы были исключены {} {}.\nПричина: {}'.format(kickauthor, message.author, reason)
@@ -751,6 +1029,9 @@ async def on_message(message):
                     tologs = discord.Embed(
                         description = 'Пользователь {} был исключён {} {}.'.format(member, kickauthor, message.author),
                         color = discord.Color.dark_grey()
+                    )
+                    tologs.set_footer(
+                        text = timenow
                     )
                     tomember = discord.Embed(
                         description = 'Вы были исключены {} {}.'.format(kickauthor, message.author)
@@ -766,7 +1047,11 @@ async def on_message(message):
                 await message.channel.send('Вы не можете исключить данного пользователя!', delete_after = 15)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
-
+#000000   000    000  0000000     0000000000  00000000
+#000  00  000    000  000   00   00        0  0000
+#000000   000    000  0000000    00  00000    00000000
+#000       000000000  000   00   00  00  00   0000
+#000        00000000  000    00   000000000   00000000
     if msglower.startswith('-purge') or msglower.startswith('-clear'):
         if message.author.guild_permissions.manage_messages or message.author.id == 400231667408699392:
             param = message.content.split(' ', 2)
@@ -796,51 +1081,58 @@ async def on_message(message):
         else:
             await message.delete()
             await message.channel.send('У вас недостаточно прав на выполнение данной команды!', delete_after = 15)
-    
+#0000000     0000000   000       00000000  0000000
+#000   00   000   000  000       0000      000
+#0000000    000   000  000       00000000  0000000
+#000   00   000   000  0000      0000          000
+#000    00   0000000   00000000  00000000  0000000
     if msglower.startswith('-roles'):
         if message.author.guild_permissions.manage_roles or message.author.id == 400231667408699392:
             roles = message.guild.roles
-            lenroles = len(roles)
             msg = ''
-            for i in range(lenroles):
-                msg += '{}\n'.format(roles[i])
+            for role in roles:
+                msg += '{}\n'.format(role)
             await message.delete()
             await message.author.send('{}:\n{}'.format(message.guild, msg))
-
+# 0000000000  000    000  0000  000       0000000   0000000
+#00        0  000    000   00   000       000   00  000
+#00  00000    000    000   00   000       000   00  0000000
+#00  00  00    000000000   00   0000      000   00      000
+# 000000000      0000000  0000  00000000  0000000   0000000
     if msglower.startswith('-guilds'):
         if message.author.id == 400231667408699392:
             await message.delete()
             guilds = client.guilds
-            guildslen = len(guilds)
             msg = ''
-            for g in range(guildslen):
-                msg += '{}\n'.format(guilds[g])
+            for g in guilds:
+                msg += '{}\n'.format(g)
             await message.author.send('Список серверов:\n{}'.format(msg))
         else:
             pass
-
+# 0000000000      0000000     0000000   000       00000000  0000000
+#00        0      000   00   000   000  000       0000      000
+#00  00000        0000000    000   000  000       00000000  0000000
+#00  00  00       000   00   000   000  0000      0000          000
+# 000000000       000    00   0000000   00000000  00000000  0000000
     if msglower.startswith('-groles'):
         if message.author.id == 400231667408699392:
-            msg = message.content.split(' ', 1)
-            if len(msg) != 2:
-                await message.author.send('Используйте: -groles [guild]')
-            else:
-                guilds = client.guilds
-                guildslen = len(guilds)
-                for g in range(guildslen):
-                    if msg[1] == str(guilds[g]):
-                        roles = guilds[g].roles
-                        lenroles = len(roles)
-                        msg = ''
-                        for r in range(len(roles)):
-                            msg += '{}\n'.format(roles[r])
-                        await message.author.send('Роли сервера {}:\n{}'.format(guilds[g], msg))
-                        break
-                else:
-                    await message.author.send('Сервер не найден!', delete_after = 15)
-        else:
-            pass
-
+            await message.delete()
+            msg = message.content.split(' ')
+            try:
+                guild = msg[1]
+                guild = client.get_guild(int(guild))
+            except IndexError:
+                await  message.channel.send('Используйте: -groles [guild_id]', delete_after = 15)
+            msg = ''
+            roles = guild.roles
+            for r in roles:
+                msg += '{}\n'.format(r.name)
+            await message.author.send('{}\n{}'.format(guild.name, msg))
+#0000000  00000000  0000000    00   00  00000000  0000000        0000  00000    000  00000000000   0000000
+#000      0000      000   00   00   00  0000      000   00        00   000 00   000  000          000   000
+#0000000  00000000  0000000    00   00  00000000  0000000         00   000  00  000  00000000     000   000
+#    000  0000      000   00    00 00   00000     000   00        00   000   00 000  000          000   000
+#0000000  00000000  000    00    000    00000000  000    00      0000  000    00000  000           0000000
     if msglower.startswith('-serverinfo'):
         await message.delete()
 
@@ -980,7 +1272,11 @@ async def on_message(message):
         )
         info.set_thumbnail(url = icon)
         await message.channel.send(embed = info)
-
+#  000000  0000000   0000000       0000000     0000000   000       00000000
+# 00   00  000   00  000   00      000   00   000   000  000       0000
+#00000000  000   00  000   00      0000000    000   000  000       00000000
+#00    00  000   00  000   00      000   00   000   000  0000      0000
+#00    00  0000000   0000000       000    00   0000000   00000000  00000000
     if msglower.startswith('-addreac') and message.author.id == 400231667408699392:
         msg = message.content.split(' ')
         await message.delete()
@@ -1011,7 +1307,11 @@ async def on_message(message):
                     await msg.add_reaction(emoji)
                 except discord.errors.HTTPException:
                     await message.channel.send('Эмодзи не найдено!', delete_after = 15)
-            
+#0000000   00000000  000           0000000     0000000   000       00000000
+#000   00  0000      000           000   00   000   000  000       0000
+#000   00  00000000  000           0000000    000   000  000       00000000
+#000   00  0000      0000          000   00   000   000  0000      0000
+#0000000   00000000  00000000      000    00   0000000   00000000  00000000
     if msglower.startswith('-delreacts') and message.author.id == 400231667408699392:
         msg = message.content.split(' ')
         await message.delete()
@@ -1027,7 +1327,11 @@ async def on_message(message):
                 await message.channel.send('Сообщение не найдено!', delete_after = 15)
                 return
             await msg.clear_reactions()
-
+#0000000    00000000  0000000  00000000  00000    000  0000000
+#000   00   0000      000      0000      000 00   000  000   00
+#0000000    00000000  0000000  00000000  000  00  000  000   00
+#000   00   0000          000  0000      000   00 000  000   00
+#000    00  00000000  0000000  00000000  000    00000  0000000
     if msglower.startswith('-resend'):
         if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
             mes = message.content.split(' ', 2)
@@ -1173,7 +1477,11 @@ async def on_message(message):
                 icon_url = img
             )
             await message.channel.send(embed = write)"""
-
+#00000     00000  00   00      00000000  00000     00000   0000000
+#000000   000000  00   00      0000      000000   000000  000   000
+#000 000 000 000   000000      00000000  000 000 000 000  000   000
+#000   000   000       00      0000      000   000   000  000   000
+#000         000   00000       00000000  000         000   0000000
     if msglower.startswith('-myemo') and message.author.id == 400231667408699392:
         content = message.content.split(' ', 1)
         await message.delete()
@@ -1237,7 +1545,11 @@ async def on_message(message):
             myemojismsg = await message.channel.send(embed = embedlist[0])
             await myemojismsg.add_reaction('◀')
             await myemojismsg.add_reaction('▶')
-
+# 0000000000  0000  00    00  00000000      0000000     0000000   000       00000000
+#00        0   00   00    00  0000          000   00   000   000  000       0000
+#00  00000     00   00    00  00000000      0000000    000   000  000       00000000
+#00  00  00    00    00  00   0000          000   00   000   000  0000      0000
+# 000000000   0000    0000    00000000      000    00   0000000   00000000  00000000
     if msglower.startswith('-giverole'):
         if message.author.guild_permissions.manage_roles or message.author.id == 400231667408699392:
             msg = message.content.split(' ', 2)
@@ -1273,7 +1585,11 @@ async def on_message(message):
                 await message.channel.send('Роль {} успешно добавлена пользователю {}!'.format(role, member), delete_after = 15)
             except:
                 await message.channel.send('Пользователь не найден!', delete_after = 15)
-
+#0000000   00000000  000           0000000     0000000   000       00000000
+#000   00  0000      000           000   00   000   000  000       0000
+#000   00  00000000  000           0000000    000   000  000       00000000
+#000   00  0000      0000          000   00   000   000  0000      0000
+#0000000   00000000  00000000      000    00   0000000   00000000  00000000
     if msglower.startswith('-delrole'):
         if message.author.guild_permissions.manage_roles or message.author.id == 400231667408699392:
             msg = message.content.split(' ', 2)
@@ -1304,7 +1620,11 @@ async def on_message(message):
                 await message.channel.send('Роль {} успешно снята с пользователя {}!'.format(role, memberid), delete_after = 15)
             except:
                 await message.channel.send('Пользователь не найден!', delete_after = 15)
-
+#000000   00000000  0000000    00000     00000  0000000
+#000  00  0000      000   00   000000   000000  000
+#00000    00000000  0000000    000 000 000 000  0000000
+#000      0000      000   00   000   000   000      000
+#000      00000000  000    00  000         000  0000000
     if msglower.startswith('-perms') and message.author.id == 400231667408699392:
         msg = message.content.split(' ')
         await message.delete()
@@ -1382,7 +1702,11 @@ async def on_message(message):
             color = discord.Color.dark_magenta()
         )
         await message.channel.send(embed = permissions, delete_after = 120)
-
+#00             00  0000000    0000  0000000000  00000000        000000  0000000
+# 00           00   000   00    00   0   00   0  0000           00   00  000
+#  00   000   00    0000000     00       00      00000000      00000000  0000000
+#   00 00 00 00     000   00    00       00      0000          00    00      000
+#    000   000      000    00  0000      00      00000000      00    00  0000000
     if msglower.startswith('-writeas') and message.author.id == 400231667408699392:
         msg = message.content.split(' ', 2)
         await message.delete()
@@ -1425,14 +1749,22 @@ async def on_message(message):
         command = 'async def on_msg(message: discord.Message):\n' + msg
         print(command)
         exec(command)"""
-
+#000000   0000  00000    000   0000000000
+#000  00   00   000 00   000  00        0
+#000000    00   000  00  000  00  00000
+#000       00   000   00 000  00  00  00
+#000      0000  000    00000   000000000
     if msglower.startswith('-ping'):
         await message.delete()
         msg = await message.channel.send('Считаю...')
         ping = int((msg.created_at.microsecond - message.created_at.microsecond) / 10000)
         pingemoji = client.get_emoji(596025886537678869)
         await msg.edit(content = 'Задержка: **{}** ms! {}'.format(ping, pingemoji), delete_after = 15)
-
+#00000     00000  000    000  0000000000  00000000
+#000000   000000  000    000  0   00   0  0000
+#000 000 000 000  000    000      00      00000000
+#000   000   000   000000000      00      0000
+#000         000     0000000      00      00000000
     if msglower.startswith('-mute'):
         if message.author.guild_permissions.mute_members or message.author.id == 400231667408699392:
             msg = message.content.split(' ', 3)
@@ -1553,24 +1885,108 @@ async def on_message(message):
                     reason = 'Channel for kvakep\'s mutes'
                 )
 
+            timenow = datetime.datetime.today()
+            year = timenow.year
+            month = timenow.month
+            if month == 1:
+                month = 'января'
+            elif month == 2:
+                month = 'февраля'
+            elif month == 3:
+                month = 'марта'
+            elif month == 4:
+                month = 'апреля'
+            elif month == 5:
+                month = 'мая'
+            elif month == 6:
+                month = 'июня'
+            elif month == 7:
+                month = 'июля'
+            elif month == 8:
+                month = 'августа'
+            elif month == 9:
+                month = 'сентября'
+            elif month == 10:
+                month = 'октября'
+            elif month == 11:
+                month = 'ноября'
+            elif month == 12:
+                month = 'декабря'
+            day = timenow.day
+            hour = timenow.hour
+            if hour == 1:
+                hour = '01'
+            elif hour == 2:
+                hour = '02'
+            elif hour == 3:
+                hour = '03'
+            elif hour == 4:
+                hour = '04'
+            elif hour == 5:
+                hour = '05'
+            elif hour == 6:
+                hour = '06'
+            elif hour == 7:
+                hour = '07'
+            elif hour == 8:
+                hour = '08'
+            elif hour == 9:
+                hour = '09'
+            elif hour == 0:
+                hour = '00'
+            minute = timenow.minute
+            if minute == 0:
+                minute = '00'
+            elif minute == 1:
+                minute == '01'
+            elif minute == 2:
+                minute == '02'
+            elif minute == 3:
+                minute == '03'
+            elif minute == 4:
+                minute == '04'
+            elif minute == 5:
+                minute == '05'
+            elif minute == 6:
+                minute == '06'
+            elif minute == 7:
+                minute == '07'
+            elif minute == 8:
+                minute == '08'
+            elif minute == 9:
+                minute == '09'
+            timenow = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
+
             if reason != '':
                 tomember = discord.Embed(
-                    description = 'Вы были замучены {} до {}.\nПричина: {}\n{}'.format(message.author, msgtime, reason, panic),
+                    description = 'Вы были заглушены {} {} до {}.\nПричина: {}\n{}'.format(muteauthor, message.author, msgtime, reason, panic),
                     color = discord.Color.dark_red()
+                )
+                tomember.set_footer(
+                    text = timenow
                 )
                 tolog = discord.Embed(
                     description = 'Пользователь {} был заглушён {} {} до {}.\nПричина: {}\n{}'.format(member.mention, muteauthor, message.author.mention, msgtime, reason, silence),
                     color = discord.Color.dark_grey()
                 )
+                tolog.set_footer(
+                    text = timenow
+                )
                 await member.addroles(muterole, reason = 'Заглушён {} {}\nПричина: {}'.format(muteauthor, message.author, reason))
             else:
                 tomember = discord.Embed(
-                    description = 'Вы были замучены {} до {}.\n{}'.format(message.author, msgtime, panic),
+                    description = 'Вы были заглушены {} {} до {}.\n{}'.format(muteauthor, message.author, msgtime, panic),
                     color = discord.Color.dark_red()
+                )
+                tomember.set_footer(
+                    text = timenow
                 )
                 tolog = discord.Embed(
                     description = 'Пользователь {} был заглушён {} {} до {}.\n{}'.format(member.mention, muteauthor, message.author.mention, msgtime, silence),
                     color = discord.Color.dark_grey()
+                )
+                tolog.set_footer(
+                    text = timenow
                 )
                 await member.add_roles(muterole, reason = 'Заглушён {} {}'.format(muteauthor, message.author))
             
@@ -1578,7 +1994,11 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
-
+#000    000  00000    000  00000     00000  000    000  0000000000  00000000
+#000    000  000 00   000  000000   000000  000    000  0   00   0  0000
+#000    000  000  00  000  000 000 000 000  000    000      00      00000000
+# 000000000  000   00 000  000   000   000   000000000      00      0000
+#   0000000  000    00000  000         000     0000000      00      00000000
     if msglower.startswith('-unmute'):
         await message.delete()
         if message.author.guild_permissions.mute_members:
@@ -1657,15 +2077,93 @@ async def on_message(message):
             else:
                 unmuteauthor = 'модератором'
 
+            timenow = datetime.datetime.today()
+            year = timenow.year
+            month = timenow.month
+            if month == 1:
+                month = 'января'
+            elif month == 2:
+                month = 'февраля'
+            elif month == 3:
+                month = 'марта'
+            elif month == 4:
+                month = 'апреля'
+            elif month == 5:
+                month = 'мая'
+            elif month == 6:
+                month = 'июня'
+            elif month == 7:
+                month = 'июля'
+            elif month == 8:
+                month = 'августа'
+            elif month == 9:
+                month = 'сентября'
+            elif month == 10:
+                month = 'октября'
+            elif month == 11:
+                month = 'ноября'
+            elif month == 12:
+                month = 'декабря'
+            day = timenow.day
+            hour = timenow.hour
+            if hour == 1:
+                hour = '01'
+            elif hour == 2:
+                hour = '02'
+            elif hour == 3:
+                hour = '03'
+            elif hour == 4:
+                hour = '04'
+            elif hour == 5:
+                hour = '05'
+            elif hour == 6:
+                hour = '06'
+            elif hour == 7:
+                hour = '07'
+            elif hour == 8:
+                hour = '08'
+            elif hour == 9:
+                hour = '09'
+            elif hour == 0:
+                hour = '00'
+            minute = timenow.minute
+            if minute == 0:
+                minute = '00'
+            elif minute == 1:
+                minute == '01'
+            elif minute == 2:
+                minute == '02'
+            elif minute == 3:
+                minute == '03'
+            elif minute == 4:
+                minute == '04'
+            elif minute == 5:
+                minute == '05'
+            elif minute == 6:
+                minute == '06'
+            elif minute == 7:
+                minute == '07'
+            elif minute == 8:
+                minute == '08'
+            elif minute == 9:
+                minute == '09'
+            timenow = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
+
             funnydogemoji = client.get_emoji(596690644467187723)
             if reason != '':
                 tolog = discord.Embed(
                     description = 'С пользователя {} был снят мут {} {}\nПричина: {}'.format(member.mention, unmuteauthor, message.author.mention, reason),
                     color = discord.Color.dark_blue()
                 )
+                tolog.set_footer(
+                    text = timenow
+                )
                 tomember = discord.Embed(
                     description = 'С Вас был снят мут {} {}\nПричина: {}\n{}'.format(unmuteauthor, message.author, reason, funnydogemoji),
                     color = discord.Color.dark_green()
+                )
+                tomember.set_footer(
+                    text = timenow
                 )
                 await member.remove_roles(muterole, reason = 'Мут снят {} {}\nПричина: {}'.format(unmuteauthor, message.author, reason))
             else:
@@ -1673,9 +2171,15 @@ async def on_message(message):
                     description = 'С пользователя {} был снят мут {} {}'.format(member.mention, unmuteauthor, message.author.mention),
                     color = discord.Color.dark_blue()
                 )
+                tolog.set_footer(
+                    text = timenow
+                )
                 tomember = discord.Embed(
                     description = 'С Вас был снят мут {} {}\n {}'.format(unmuteauthor, message.author, funnydogemoji),
                     color = discord.Color.dark_green()
+                )
+                tomember.setfooter(
+                    text = timenow
                 )
                 await member.remove_roles(muterole, reason = 'Мут снят {} {}'.format(unmuteauthor, message.author))
             
@@ -1684,7 +2188,11 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
-
+#000000     000000  00000    000
+#000  00   00   00  000 00   000
+#000000   00000000  000  00  000
+#000  00  00    00  000   00 000
+#000000   00    00  000    00000
     if msglower.startswith('-ban'):
         if message.author.guild_permissions.kick_members or message.author.id == 400231667408699392:
             msg = message.content.split(' ', 3)
@@ -1805,24 +2313,108 @@ async def on_message(message):
                     reason = 'Channel for kvakep\'s bans'
                 )
 
+            timenow = datetime.datetime.today()
+            year = timenow.year
+            month = timenow.month
+            if month == 1:
+                month = 'января'
+            elif month == 2:
+                month = 'февраля'
+            elif month == 3:
+                month = 'марта'
+            elif month == 4:
+                month = 'апреля'
+            elif month == 5:
+                month = 'мая'
+            elif month == 6:
+                month = 'июня'
+            elif month == 7:
+                month = 'июля'
+            elif month == 8:
+                month = 'августа'
+            elif month == 9:
+                month = 'сентября'
+            elif month == 10:
+                month = 'октября'
+            elif month == 11:
+                month = 'ноября'
+            elif month == 12:
+                month = 'декабря'
+            day = timenow.day
+            hour = timenow.hour
+            if hour == 1:
+                hour = '01'
+            elif hour == 2:
+                hour = '02'
+            elif hour == 3:
+                hour = '03'
+            elif hour == 4:
+                hour = '04'
+            elif hour == 5:
+                hour = '05'
+            elif hour == 6:
+                hour = '06'
+            elif hour == 7:
+                hour = '07'
+            elif hour == 8:
+                hour = '08'
+            elif hour == 9:
+                hour = '09'
+            elif hour == 0:
+                hour = '00'
+            minute = timenow.minute
+            if minute == 0:
+                minute = '00'
+            elif minute == 1:
+                minute == '01'
+            elif minute == 2:
+                minute == '02'
+            elif minute == 3:
+                minute == '03'
+            elif minute == 4:
+                minute == '04'
+            elif minute == 5:
+                minute == '05'
+            elif minute == 6:
+                minute == '06'
+            elif minute == 7:
+                minute == '07'
+            elif minute == 8:
+                minute == '08'
+            elif minute == 9:
+                minute == '09'
+            timenow = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
+
             if reason != '':
                 tomember = discord.Embed(
-                    description = 'Вы были забанены {} до {}.\nПричина: {}\n{}'.format(message.author, msgtime, reason, panic),
+                    description = 'Вы были забанены {} {} до {}.\nПричина: {}\n{}'.format(banauthor, message.author, msgtime, reason, panic),
                     color = discord.Color.dark_red()
+                )
+                tomember.set_footer(
+                    text = timenow
                 )
                 tolog = discord.Embed(
                     description = 'Пользователь {} был забанен {} {} до {}.\nПричина: {}\n{}'.format(member.mention, banauthor, message.author.mention, msgtime, reason, banhammer),
                     color = discord.Color.dark_grey()
                 )
+                tolog.set_footer(
+                    text = timenow
+                )
                 await member.add_roles(banrole, reason = 'Забанен {} {}\nПричина: {}'.format(banauthor, message.author, reason))
             else:
                 tomember = discord.Embed(
-                    description = 'Вы были забанены {} до {}.\n{}'.format(message.author, msgtime, panic),
+                    description = 'Вы были забанены {} {} до {}.\n{}'.format(banauthor, message.author, msgtime, panic),
                     color = discord.Color.dark_red()
+                )
+                tomember.set_footer(
+                    text = timenow
                 )
                 tolog = discord.Embed(
                     description = 'Пользователь {} был забанен {} {} до {}.\n{}'.format(member.mention, banauthor, message.author.mention, msgtime, banhammer),
                     color = discord.Color.dark_grey()
+                )
+                tolog.set_footer(
+                    text = timenow
                 )
                 await member.add_roles(banrole, reason = 'Забанен {} {}'.format(banauthor, message.author))
             
@@ -1831,7 +2423,11 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
-        
+#000    000  00000    000  000000     000000  00000    000
+#000    000  000 00   000  000  00   00   00  000 00   000
+#000    000  000  00  000  000000   00000000  000  00  000
+# 000000000  000   00 000  000  00  00    00  000   00 000
+#   0000000  000    00000  000000   00    00  000    00000
     if msglower.startswith('-unban'):
         await message.delete()
         if message.author.guild_permissions.kick_members:
@@ -1910,15 +2506,93 @@ async def on_message(message):
             else:
                 unbanauthor = 'модератором'
 
+            timenow = datetime.datetime.today()
+            year = timenow.year
+            month = timenow.month
+            if month == 1:
+                month = 'января'
+            elif month == 2:
+                month = 'февраля'
+            elif month == 3:
+                month = 'марта'
+            elif month == 4:
+                month = 'апреля'
+            elif month == 5:
+                month = 'мая'
+            elif month == 6:
+                month = 'июня'
+            elif month == 7:
+                month = 'июля'
+            elif month == 8:
+                month = 'августа'
+            elif month == 9:
+                month = 'сентября'
+            elif month == 10:
+                month = 'октября'
+            elif month == 11:
+                month = 'ноября'
+            elif month == 12:
+                month = 'декабря'
+            day = timenow.day
+            hour = timenow.hour
+            if hour == 1:
+                hour = '01'
+            elif hour == 2:
+                hour = '02'
+            elif hour == 3:
+                hour = '03'
+            elif hour == 4:
+                hour = '04'
+            elif hour == 5:
+                hour = '05'
+            elif hour == 6:
+                hour = '06'
+            elif hour == 7:
+                hour = '07'
+            elif hour == 8:
+                hour = '08'
+            elif hour == 9:
+                hour = '09'
+            elif hour == 0:
+                hour = '00'
+            minute = timenow.minute
+            if minute == 0:
+                minute = '00'
+            elif minute == 1:
+                minute == '01'
+            elif minute == 2:
+                minute == '02'
+            elif minute == 3:
+                minute == '03'
+            elif minute == 4:
+                minute == '04'
+            elif minute == 5:
+                minute == '05'
+            elif minute == 6:
+                minute == '06'
+            elif minute == 7:
+                minute == '07'
+            elif minute == 8:
+                minute == '08'
+            elif minute == 9:
+                minute == '09'
+            timenow = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
+
             funnydogemoji = client.get_emoji(596690644467187723)
             if reason != '':
                 tolog = discord.Embed(
                     description = 'С пользователя {} был снят бан {} {}\nПричина: {}'.format(member.mention, unbanauthor, message.author.mention, reason),
                     color = discord.Color.dark_blue()
                 )
+                tolog.set_footer(
+                    text = timenow
+                )
                 tomember = discord.Embed(
                     description = 'С Вас был снят бан {} {}\nПричина: {}\n{}'.format(unbanauthor, message.author, reason, funnydogemoji),
                     color = discord.Color.dark_green()
+                )
+                tomember.set_ffoter(
+                    text = timenow
                 )
                 await member.remove_roles(banrole, reason = 'Бан снят {} {}\nПричина: {}'.format(unbanauthor, message.author, reason))
             else:
@@ -1926,9 +2600,15 @@ async def on_message(message):
                     description = 'С пользователя {} был снят бан {} {}'.format(member.mention, unbanauthor, message.author.mention),
                     color = discord.Color.dark_blue()
                 )
+                tolog.set_footer(
+                    text = timenow
+                )
                 tomember = discord.Embed(
                     description = 'С Вас был снят бан {} {}\n {}'.format(unbanauthor, message.author, funnydogemoji),
                     color = discord.Color.dark_green()
+                )
+                tomember.set_footer(
+                    text = timenow
                 )
                 await member.remove_roles(banrole, reason = 'Бан снят {} {}'.format(unbanauthor, message.author))
             
@@ -1937,9 +2617,13 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
-
-
-
+"""
+ xxxxxxx   xxxxx    xxx      xxxxxxx    xxxxxxxx    xxxxxx   xxxxxx         xxxxxx  xxxxxxx   xxxxxxx       ################
+xxx   xxx  xxx xx   xxx      xxx   xx   xxxx       xx   xx  xxx    x       xx   xx  xxx   xx  xxx   xx      ################
+xxx   xxx  xxx  xx  xxx      xxxxxxx    xxxxxxxx  xxxxxxxx  xxx           xxxxxxxx  xxx   xx  xxx   xx      ################
+xxx   xxx  xxx   xx xxx      xxx   xx   xxxx      xx    xx  xxx    x      xx    xx  xxx   xx  xxx   xx      ################
+ xxxxxxx   xxx    xxxxx      xxx    xx  xxxxxxxx  xx    xx   xxxxxx       xx    xx  xxxxxxx   xxxxxxx       ################
+"""
 @client.event
 async def on_reaction_add(reaction, user):
 
