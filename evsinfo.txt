@@ -1,6 +1,6 @@
-Стат: hp; Дают: Nidoran(Ж), Slowpoke, Grimer, Vaporeon, Marill, Phanpy;
-Стат: atk; Дают: Ekans, Nidoran(М), Machop, Krabby, Kingler, Goldeen, Seaking, Larvitar, Poochyena, Trapinch, Corphish, Crawdaunt, Shinx, Sandile, Pawniard, Bisharp;
-Стат: def; Дают: Sandshrew, Geodude, Shellder, Onix, Cubone, Marowak, Magcargo, Pelipper, Bronzor, Skorupi, Sewaddle, Swadloon, Venipede, Klink, Klang;
-Стат: spa; Дают: Oddish, Psyduck, Golduck, Abra, Gastly, Slugma, Glaceon;
-Стат: spd; Дают: Tentacool, Tentacruel, Seel, Mantine, Duskull, Dewpider;
-Стат: spe; Дают: Rattata, Raticate, Pikachu, Zubat, Golbat, Diglett, Meowth, Poliwag, Poliwhirl, Ponyta, Staryu, Magikarp, Electrike, Pachirisu, Blitzle, Woobat, Swoobat, Froakie, Frogadier, Helioptile, Salandit, Salazzle;
+Stat: hp; Pokemons: Nidoran(пїЅ), Slowpoke, Grimer, Vaporeon, Marill, Phanpy;
+Stat: atk; Pokemons: Ekans, Nidoran(пїЅ), Machop, Krabby, Kingler, Goldeen, Seaking, Larvitar, Poochyena, Trapinch, Corphish, Crawdaunt, Shinx, Sandile, Pawniard, Bisharp;
+Stat: def; Pokemons: Sandshrew, Geodude, Shellder, Onix, Cubone, Marowak, Magcargo, Pelipper, Bronzor, Skorupi, Sewaddle, Swadloon, Venipede, Klink, Klang;
+Stat: spa; Pokemons: Oddish, Psyduck, Golduck, Abra, Gastly, Slugma, Glaceon;
+Stat: spd; Pokemons: Tentacool, Tentacruel, Seel, Mantine, Duskull, Dewpider;
+Stat: spe; Pokemons: Rattata, Raticate, Pikachu, Zubat, Golbat, Diglett, Meowth, Poliwag, Poliwhirl, Ponyta, Staryu, Magikarp, Electrike, Pachirisu, Blitzle, Woobat, Swoobat, Froakie, Frogadier, Helioptile, Salandit, Salazzle;

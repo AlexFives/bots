@@ -388,19 +388,19 @@ async def on_message(message):
 
             if pokorstat in line:
 
-                number = re.search(r'Номер: \d{1,3};', line)
+                number = re.search(r'Number: \d{1,3};', line)
                 number = number.group(0)
-                number = number[7:]
+                number = number[8:]
                 number = number.replace(';', '')
                 
-                givingevs = re.search(r'Даёт: .{1,30};', line)
+                givingevs = re.search(r'Give: .{1,30};', line)
                 givingevs = givingevs.group(0)
                 givingevs = givingevs[6:]
                 givingevs = givingevs.replace(';', '')
 
-                photo = re.search(r'Фото: .{1,100};', line)
+                photo = re.search(r'Photo: .{1,100};', line)
                 photo = photo.group(0)
-                photo = photo[6:]
+                photo = photo[7:]
                 photo = photo.replace(';', '')
 
                 poketime = datetime.datetime.today()
@@ -502,12 +502,12 @@ async def on_message(message):
 
                 if pokorstat in line:
 
-                    stat = re.search(r'Стат: ' + pokorstat + r';', line)
+                    stat = re.search(r'Stat: ' + pokorstat + r';', line)
                     stat = stat.group(0)
 
-                    gives = re.search(r'Дают: .*;', line)
+                    gives = re.search(r'Pokemons: .*;', line)
                     gives = gives.group(0)
-                    gives = gives[6:]
+                    gives = gives[10:]
                     gives = gives.replace(';', '')
 
                     poketime = datetime.datetime.today()
