@@ -1,3 +1,5 @@
+﻿Pokemons:
+#####################
 Number: 1; Pokemon: bulbasaur; Give: 1SpA; Photo: https://pokemongolife.ru/p/Bulbasaur.png;
 Number: 2; Pokemon: ivysaur; Give: 1SpA, 1SpD; Photo: https://pokemongolife.ru/p/Ivysaur.png;
 Number: 3; Pokemon: venusaur; Give: 2SpA, 1SpD; Photo: https://pokemongolife.ru/p/Venusaur.png;
@@ -26,7 +28,7 @@ Number: 25; Pokemon: pikachu; Give: 2Spe; Photo: https://pokemongolife.ru/p/Pika
 Number: 26; Pokemon: raichu; Give: 3Spe; Photo: https://pokemongolife.ru/p/Raichu.png;
 Number: 27; Pokemon: sandshrew; Give: 1Def; Photo: https://pokemongolife.ru/p/Sandshrew.png;
 Number: 28; Pokemon: sandslash; Give: 2Def; Photo: https://pokemongolife.ru/p/Sandslash.png;
-Number: 29; Pokemon: nidoran; Give: �: 1HP, �: 1Atk; Photo: https://pokemongolife.ru/p/Nidoran-female.png;
+Number: 29; Pokemon: nidoran; Give: Female: 1HP\nMale: 1Atk; Photo: https://pokemongolife.ru/p/Nidoran-female.png;
 Number: 30; Pokemon: nidorino; Give: 2Atk; Photo: https://pokemongolife.ru/p/Nidorino.png;
 Number: 31; Pokemon: nidoqueen; Give: 3HP; Photo: https://pokemongolife.ru/p/Nidoqueen.png;
 Number: 32; Pokemon: nidoking; Give: 3Atk; Photo: https://pokemongolife.ru/p/Nidoking.png;
@@ -800,3 +802,12 @@ Number: 799; Pokemon: naganadel; Give: 3SpA; Photo: https://i.imgur.com/fr0BFsP.
 Number: 800; Pokemon: stakataka; Give: 3Def; Photo: https://i.imgur.com/HGp8yuU.png;
 Number: 801; Pokemon: blacephalon; Give: 3SpA; Photo: https://i.imgur.com/Bpy4tm3.png;
 Number: 802; Pokemon: zeraora; Give: 3Spe; Photo: https://i.imgur.com/tcJnNBQ.png;
+
+EVs:
+#####################
+Stat: hp; Pokemons: Nidoran(Female), Slowpoke, Grimer, Vaporeon, Marill, Phanpy;
+Stat: atk; Pokemons: Ekans, Nidoran(Male), Machop, Krabby, Kingler, Goldeen, Seaking, Larvitar, Poochyena, Trapinch, Corphish, Crawdaunt, Shinx, Sandile, Pawniard, Bisharp;
+Stat: def; Pokemons: Sandshrew, Geodude, Shellder, Onix, Cubone, Marowak, Magcargo, Pelipper, Bronzor, Skorupi, Sewaddle, Swadloon, Venipede, Klink, Klang;
+Stat: spa; Pokemons: Oddish, Psyduck, Golduck, Abra, Gastly, Slugma, Glaceon;
+Stat: spd; Pokemons: Tentacool, Tentacruel, Seel, Mantine, Duskull, Dewpider;
+Stat: spe; Pokemons: Rattata, Raticate, Pikachu, Zubat, Golbat, Diglett, Meowth, Poliwag, Poliwhirl, Ponyta, Staryu, Magikarp, Electrike, Pachirisu, Blitzle, Woobat, Swoobat, Froakie, Frogadier, Helioptile, Salandit, Salazzle;

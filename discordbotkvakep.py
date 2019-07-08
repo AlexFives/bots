@@ -425,7 +425,7 @@ async def on_ready():
     print('----------')
     await client.change_presence(status=discord.Status.dnd, activity=botstream)
     loop = asyncio.get_event_loop()
-    asyncio.ensure_future(mute_check())
+    asyncio.ensure_future(punish_check())
 
 
 
@@ -579,15 +579,27 @@ async def on_message(message):
         lines = pokemoninfo.readlines()
         pokemoninfo.close()
 
+        pok = 'Pokemon: {};'.format(pokorstat)
+        num = 'Number: {};'.format(pokorstat)
+        gstat = 'Stat: {};'.format(pokorstat)
+
         for line in lines:
+            
+            if pok in line:
 
-            if pokorstat in line:
+                pokemon = re.search(r'Pokemon: .*; G', line)
+                pokemon = pokemon.group(0)
+                pokemon = pokemon[9:]
+                pokemon = pokemon.replace(';', '')
+                pokemon = pokemon.replace(' ', '')
+                pokemon = pokemon.replace('G', '')
+                pokemon = pokemon.title()
 
-                number = re.search(r'Number: \d{1,3};', line)
+                number = re.search(r'Number: \d*;', line)
                 number = number.group(0)
                 number = number[8:]
                 number = number.replace(';', '')
-                
+
                 givingevs = re.search(r'Give: .{1,30};', line)
                 givingevs = givingevs.group(0)
                 givingevs = givingevs[6:]
@@ -597,86 +609,168 @@ async def on_message(message):
                 photo = photo.group(0)
                 photo = photo[7:]
                 photo = photo.replace(';', '')
+                break
 
-                poketime = datetime.datetime.today()
-                year = poketime.year
-                month = poketime.month
-                if month == 1:
-                    month = 'января'
-                elif month == 2:
-                    month = 'февраля'
-                elif month == 3:
-                    month = 'марта'
-                elif month == 4:
-                    month = 'апреля'
-                elif month == 5:
-                    month = 'мая'
-                elif month == 6:
-                    month = 'июня'
-                elif month == 7:
-                    month = 'июля'
-                elif month == 8:
-                    month = 'августа'
-                elif month == 9:
-                    month = 'сентября'
-                elif month == 10:
-                    month = 'октября'
-                elif month == 11:
-                    month = 'ноября'
-                elif month == 12:
-                    month = 'декабря'
-                day = poketime.day
-                hour = poketime.hour
-                if hour == 1:
-                    hour = '01'
-                elif hour == 2:
-                    hour = '02'
-                elif hour == 3:
-                    hour = '03'
-                elif hour == 4:
-                    hour = '04'
-                elif hour == 5:
-                    hour = '05'
-                elif hour == 6:
-                    hour = '06'
-                elif hour == 7:
-                    hour = '07'
-                elif hour == 8:
-                    hour = '08'
-                elif hour == 9:
-                    hour = '09'
-                elif hour == 0:
-                    hour = '00'
-                minute = poketime.minute
-                if minute == 0:
-                    minute = '00'
-                elif minute == 1:
-                    minute == '01'
-                elif minute == 2:
-                    minute == '02'
-                elif minute == 3:
-                    minute == '03'
-                elif minute == 4:
-                    minute == '04'
-                elif minute == 5:
-                    minute == '05'
-                elif minute == 6:
-                    minute == '06'
-                elif minute == 7:
-                    minute == '07'
-                elif minute == 8:
-                    minute == '08'
-                elif minute == 9:
-                    minute == '09'
-                poketime = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
+            elif num in line:
 
-                color = random.choice([discord.Color.dark_blue(), discord.Color.dark_gold(), discord.Color.dark_green(), discord.Color.dark_grey(), discord.Color.dark_magenta(), discord.Color.dark_orange(), discord.Color.dark_purple(), discord.Color.dark_red(), discord.Color.dark_teal()])
+                number = re.search(r'Number: \d*;', line)
+                number = number.group(0)
+                number = number[8:]
+                number = number.replace(';', '')
+
+                pokemon = re.search(r'Pokemon: .*; G', line)
+                pokemon = pokemon.group(0)
+                pokemon = pokemon[9:]
+                pokemon = pokemon.replace(';', '')
+                pokemon = pokemon.replace(' ', '')
+                pokemon = pokemon.replace('G', '')
+                pokemon = pokemon.title()
+
+                givingevs = re.search(r'Give: .{1,30};', line)
+                givingevs = givingevs.group(0)
+                givingevs = givingevs[6:]
+                givingevs = givingevs.replace(';', '')
+
+                photo = re.search(r'Photo: .*;', line)
+                photo = photo.group(0)
+                photo = photo[7:]
+                photo = photo.replace(';', '')
+                break
+
+            elif gstat in line:
+
+                stat = re.search(r'Stat: \w*;', line)
+                stat = stat.group(0)
+                stat = stat[6:]
+                stat = stat.replace(';', '')
+                if stat == 'hp':
+                    stat = 'Здоровье'
+                elif stat == 'atk':
+                    stat = 'Атака'
+                elif stat == 'def':
+                    stat = 'Защита'
+                elif stat == 'spa':
+                    stat = 'Специальная атака'
+                elif stat == 'spd':
+                    stat = 'Специальная защита'
+                elif stat == 'spe':
+                    stat = 'Скорость'
+
+                gives = re.search(r'Pokemons: .*;', line)
+                gives = gives.group(0)
+                gives = gives[10:]
+                gives = gives.replace(';', '')
+                break
+        else:
+
+            plak = client.get_emoji(594173858085470208)
+            fail = discord.Embed(
+                description = 'К сожалению, ничего не найдено {}'.format(plak),
+                color = discord.Color.dark_magenta()
+            )
+            await message.channel.send(embed = fail, delete_after = 15)
+            return
+
+        poketime = datetime.datetime.today()
+        year = poketime.year
+        month = poketime.month
+        if month == 1:
+            month = 'января'
+        elif month == 2:
+            month = 'февраля'
+        elif month == 3:
+            month = 'марта'
+        elif month == 4:
+            month = 'апреля'
+        elif month == 5:
+            month = 'мая'
+        elif month == 6:
+            month = 'июня'
+        elif month == 7:
+            month = 'июля'
+        elif month == 8:
+            month = 'августа'
+        elif month == 9:
+            month = 'сентября'
+        elif month == 10:
+            month = 'октября'
+        elif month == 11:
+            month = 'ноября'
+        elif month == 12:
+            month = 'декабря'
+        day = poketime.day
+        hour = poketime.hour
+        if hour == 1:
+            hour = '01'
+        elif hour == 2:
+            hour = '02'
+        elif hour == 3:
+            hour = '03'
+        elif hour == 4:
+            hour = '04'
+        elif hour == 5:
+            hour = '05'
+        elif hour == 6:
+            hour = '06'
+        elif hour == 7:
+            hour = '07'
+        elif hour == 8:
+            hour = '08'
+        elif hour == 9:
+            hour = '09'
+        elif hour == 0:
+            hour = '00'
+        minute = poketime.minute
+        if minute == 0:
+            minute = '00'
+        elif minute == 1:
+            minute == '01'
+        elif minute == 2:
+            minute == '02'
+        elif minute == 3:
+            minute == '03'
+        elif minute == 4:
+            minute == '04'
+        elif minute == 5:
+            minute == '05'
+        elif minute == 6:
+            minute == '06'
+        elif minute == 7:
+            minute == '07'
+        elif minute == 8:
+            minute == '08'
+        elif minute == 9:
+            minute == '09'
+        poketime = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
+
+        color = random.choice([discord.Color.dark_blue(), discord.Color.dark_gold(), discord.Color.dark_green(), discord.Color.dark_grey(), discord.Color.dark_magenta(), discord.Color.dark_orange(), discord.Color.dark_purple(), discord.Color.dark_red(), discord.Color.dark_teal()])
+            
+        try:
+            pokeinfo = discord.Embed(
+                description = '__**Покемон:**__ ***{}***\n__**Даёт:**__ ***{}***\n__**Номер в покедексе:**__ ***{}***'.format(pokemon.title(), givingevs, number),
+                color = color
+            )
+            pokeinfo.set_thumbnail(
+                url = photo
+            )
+            pokeinfo.set_footer(
+                text = 'Cпросил {} {}'.format(message.author, poketime),
+                icon_url = message.author.avatar_url
+            )
+            pokeinfo.set_author(
+                name = 'Pokemon Info:',
+                icon_url = 'https://i.imgur.com/iQqhe6y.gif'
+            )
+            await message.channel.send(embed = pokeinfo)
+        
+        except:
+            try:
                 pokeinfo = discord.Embed(
-                    description = '__**Покемон:**__ ***{}***\n__**Даёт:**__ ***{}***\n__**Номер в покедексе:**__ ***{}***'.format(pokorstat.title(), givingevs, number),
+                    description = '__**Характеристика:**__ ***{}***\n__**Дают:**__ ***{}***'.format(stat, gives),
                     color = color
                 )
                 pokeinfo.set_thumbnail(
-                    url = photo
+                    url = 'https://media1.giphy.com/media/NS7gPxeumewkWDOIxi/giphy.gif?cid=790b76115cefcfce634a33554df6fcf5&rid=giphy.gif'
                 )
                 pokeinfo.set_footer(
                     text = 'Запросил {}    {}'.format(message.author, poketime),
@@ -687,122 +781,9 @@ async def on_message(message):
                     icon_url = 'https://i.imgur.com/iQqhe6y.gif'
                 )
                 await message.channel.send(embed = pokeinfo)
-                break
+            except:
+                print(Exception)
 
-        else:
-            evsinfo = open('evsinfo.txt', 'r')
-            lines = evsinfo.readlines()
-            evsinfo.close()
-            for line in lines:
-
-                if pokorstat in line:
-
-                    stat = re.search(r'Stat: ' + pokorstat + r';', line)
-                    stat = stat.group(0)
-
-                    gives = re.search(r'Pokemons: .*;', line)
-                    gives = gives.group(0)
-                    gives = gives[10:]
-                    gives = gives.replace(';', '')
-
-                    poketime = datetime.datetime.today()
-                    year = poketime.year
-                    month = poketime.month
-                    if month == 1:
-                        month = 'января'
-                    elif month == 2:
-                        month = 'февраля'
-                    elif month == 3:
-                        month = 'марта'
-                    elif month == 4:
-                        month = 'апреля'
-                    elif month == 5:
-                        month = 'мая'
-                    elif month == 6:
-                        month = 'июня'
-                    elif month == 7:
-                        month = 'июля'
-                    elif month == 8:
-                        month = 'августа'
-                    elif month == 9:
-                        month = 'сентября'
-                    elif month == 10:
-                        month = 'октября'
-                    elif month == 11:
-                        month = 'ноября'
-                    elif month == 12:
-                        month = 'декабря'
-                    day = poketime.day
-                    hour = poketime.hour
-                    if hour == 1:
-                        hour = '01'
-                    elif hour == 2:
-                        hour = '02'
-                    elif hour == 3:
-                        hour = '03'
-                    elif hour == 4:
-                        hour = '04'
-                    elif hour == 5:
-                        hour = '05'
-                    elif hour == 6:
-                        hour = '06'
-                    elif hour == 7:
-                        hour = '07'
-                    elif hour == 8:
-                        hour = '08'
-                    elif hour == 9:
-                        hour = '09'
-                    elif hour == 0:
-                        hour = '00'
-                    minute = poketime.minute
-                    if minute == 0:
-                        minute = '00'
-                    elif minute == 1:
-                        minute == '01'
-                    elif minute == 2:
-                        minute == '02'
-                    elif minute == 3:
-                        minute == '03'
-                    elif minute == 4:
-                        minute == '04'
-                    elif minute == 5:
-                        minute == '05'
-                    elif minute == 6:
-                        minute == '06'
-                    elif minute == 7:
-                        minute == '07'
-                    elif minute == 8:
-                        minute == '08'
-                    elif minute == 9:
-                        minute == '09'
-                    poketime = '{} {} {} в {}:{}'.format(day, month, year, hour, minute)
-
-                    color = random.choice([discord.Color.dark_blue(), discord.Color.dark_gold(), discord.Color.dark_green(), discord.Color.dark_grey(), discord.Color.dark_magenta(), discord.Color.dark_orange(), discord.Color.dark_purple(), discord.Color.dark_red(), discord.Color.dark_teal()])
-                    pokeinfo = discord.Embed(
-                        description = '__**Стат:**__ ***{}***\n__**Дают:**__ ***{}***'.format(pokorstat, gives),
-                        color = color
-                    )
-                    pokeinfo.set_thumbnail(
-                        url = 'https://media1.giphy.com/media/NS7gPxeumewkWDOIxi/giphy.gif?cid=790b76115cefcfce634a33554df6fcf5&rid=giphy.gif'
-                    )
-                    pokeinfo.set_footer(
-                        text = 'Запросил {}    {}'.format(message.author, poketime),
-                        icon_url = message.author.avatar_url
-                    )
-                    pokeinfo.set_author(
-                        name = 'Pokemon Info:',
-                        icon_url = 'https://i.imgur.com/iQqhe6y.gif'
-                    )
-                    await message.channel.send(embed = pokeinfo)
-                    break
-
-            else:
-                plak = client.get_emoji(594173858085470208)
-                fail = discord.Embed(
-                    description = 'К сожалению, ничего не найдено {}'.format(plak),
-                    color = discord.Color.dark_magenta()
-                )
-                await message.channel.send(embed = fail, delete_after = 15)
 
 #0000000000  0000000000
 #0   00   0  000
@@ -836,15 +817,18 @@ async def on_message(message):
             try:
                 for e in myemojis:
                     if e.name in msg[1]:
-                        emoji = e
-                        msg[1] = msg[1].replace(':{}:'.format(emoji.name), str(emoji))
-                        continue
+                        try:
+                            check = re.search(r'<:' + e.name + r':\d*>', msg[1])
+                            check = check.group(0)
+                            check = check[1:]
+                        except:
+                            msg[1] = msg[1].replace(':{}:'.format(e.name), str(e))
             except:
                 await message.channel.send('Используйте: -say [message]', delete_after = 15)
                 return
 
             semb = discord.Embed(
-                description = say,
+                description = msg[1],
                 color = discord.Color.dark_teal()
             )
             await message.channel.send(embed = semb)
@@ -869,16 +853,19 @@ async def on_message(message):
                 await message.channel.send('Используйте: -whisper [@member/member_id] [message]', delete_after = 15)
             
             try:
-                msg = msg[2]
-                for emoji in client.emojis:
-                    if emoji.name in msg:
-                        msg = msg.replace(':{}:'.format(emoji.name), emoji)
-                        continue
+                for e in client.emojis:
+                    if e.name in msg[2]:
+                        try:
+                            check = re.search(r'<:' + e.name + r':\d*>', msg[2])
+                            check = check.group(0)
+                            check = check[1:]
+                        except:
+                            msg[2] = msg.replace(':{}:'.format(e.name), str(e))
             except IndexError:
                 await message.channel.send('Используйте: -whisper [@member/member_id] [message]', delete_after = 15)
 
             whisper = discord.Embed(
-                description = msg,
+                description = msg[2],
                 color = discord.Color.dark_orange()
             )
 
