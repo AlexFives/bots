@@ -1,6 +1,0 @@
-Stat: hp; Pokemons: Nidoran(�), Slowpoke, Grimer, Vaporeon, Marill, Phanpy;
-Stat: atk; Pokemons: Ekans, Nidoran(�), Machop, Krabby, Kingler, Goldeen, Seaking, Larvitar, Poochyena, Trapinch, Corphish, Crawdaunt, Shinx, Sandile, Pawniard, Bisharp;
-Stat: def; Pokemons: Sandshrew, Geodude, Shellder, Onix, Cubone, Marowak, Magcargo, Pelipper, Bronzor, Skorupi, Sewaddle, Swadloon, Venipede, Klink, Klang;
-Stat: spa; Pokemons: Oddish, Psyduck, Golduck, Abra, Gastly, Slugma, Glaceon;
-Stat: spd; Pokemons: Tentacool, Tentacruel, Seel, Mantine, Duskull, Dewpider;
-Stat: spe; Pokemons: Rattata, Raticate, Pikachu, Zubat, Golbat, Diglett, Meowth, Poliwag, Poliwhirl, Ponyta, Staryu, Magikarp, Electrike, Pachirisu, Blitzle, Woobat, Swoobat, Froakie, Frogadier, Helioptile, Salandit, Salazzle;
