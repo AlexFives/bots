@@ -398,7 +398,7 @@ async def on_message(message):
                 givingevs = givingevs[6:]
                 givingevs = givingevs.replace(';', '')
 
-                photo = re.search(r'Photo: .{1,100};', line)
+                photo = re.search(r'Photo: .*;', line)
                 photo = photo.group(0)
                 photo = photo[7:]
                 photo = photo.replace(';', '')
