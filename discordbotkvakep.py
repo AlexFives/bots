@@ -27,6 +27,9 @@ topfact10 = ''
 
 
 client = discord.Client()
+
+
+
 """
  xxxxxx   xxx   xxx  xxxxxxxx   xxxxxx   xxx   xxx      ################
 xxx    x  xxx   xxx  xxxx      xxx    x  xxx  xxx       ################
@@ -406,6 +409,9 @@ async def punish_check():
         except:
             pass
         await asyncio.sleep(10)
+
+
+
 """
  xxxxxxx   xxxxx    xxx      xxxxxxx    xxxxxxxx    xxxxxx  xxxxxxx   xx   xx      ################
 xxx   xxx  xxx xx   xxx      xxx   xx   xxxx       xx   xx  xxx   xx  xx   xx      ################
@@ -421,6 +427,8 @@ async def on_ready():
     loop = asyncio.get_event_loop()
     asyncio.ensure_future(mute_check())
 
+
+
 """
  xxxxxxx   xxxxx    xxx      xxxxx     xxxxx  xxxxxxx   xxxxxxxxxx      ################
 xxx   xxx  xxx xx   xxx      xxx xx   xx xxx  xxx      xx        x      ################
@@ -435,6 +443,7 @@ async def on_message(message):
 
     if message.author == client.user:
         return
+
 #000   000  00000000  000       000000
 #000   000  0000      000       000  00
 #000000000  00000000  000       000000
@@ -480,6 +489,7 @@ async def on_message(message):
             url='https://i.imgur.com/PkP3JUE.png'
         )
         await message.channel.send(embed=embed)
+
 #000       000
 #000       000
 #000       000
@@ -522,6 +532,7 @@ async def on_message(message):
             text='made by {}'.format(client.get_user(499284863686279201))
         )
         await message.channel.send(embed=embed)
+
 #0000000000  000       0000  000000
 #000         000        00   000  00
 #0000000     000        00   000000
@@ -548,6 +559,7 @@ async def on_message(message):
         flp.set_thumbnail(url = flip)
         m = await message.channel.send(embed = flp)
         await m.add_reaction(emoji)
+
 #00000000  00   00  0000000
 #0000      00   00  000
 #00000000  00   00  0000000
@@ -791,6 +803,7 @@ async def on_message(message):
                     color = discord.Color.dark_magenta()
                 )
                 await message.channel.send(embed = fail, delete_after = 15)
+
 #0000000000  0000000000
 #0   00   0  000
 #    00      0000000
@@ -809,6 +822,7 @@ async def on_message(message):
         )
         await message.delete()
         await message.channel.send(embed=topemb)
+
 #0000000    000000  00   00
 #000       00   00  00   00
 #0000000  00000000   000000
@@ -819,20 +833,22 @@ async def on_message(message):
             await message.delete()
             msg = message.content.split(' ', 1)
             myemojis = client.emojis
-            for e in range(len(myemojis)):
-                if myemojis[e].name in msg[1]:
-                    emoji = myemojis[e]
-                    msg[1] = msg[1].replace(':{}:'.format(emoji.name), str(emoji))
-                    continue
             try:
-                say = msg[1]
-                semb = discord.Embed(
-                    description = say,
-                    color = 0x00ff00
-                )
-                await message.channel.send(embed = semb)
+                for e in myemojis:
+                    if e.name in msg[1]:
+                        emoji = e
+                        msg[1] = msg[1].replace(':{}:'.format(emoji.name), str(emoji))
+                        continue
             except:
-                await message.channel.send('Используйте: -say [message]', delete_after = 15)               
+                await message.channel.send('Используйте: -say [message]', delete_after = 15)
+                return
+
+            semb = discord.Embed(
+                description = say,
+                color = discord.Color.dark_teal()
+            )
+            await message.channel.send(embed = semb)
+
 #00             00  000    000  0000  0000000  000000   00000000  0000000
 # 00           00   000    000   00   000      000  00  0000      000   00
 #  00   000   00    0000000000   00   0000000  000000   00000000  0000000
@@ -840,23 +856,34 @@ async def on_message(message):
 #    000   000      000    000  0000  0000000  000      00000000  000    00
     if msglower.startswith('-whisper'):
         if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
-            whisper = message.content.split(' ', 2)
             await message.delete()
-            whisper[1] = whisper[1].replace('<', '')
-            whisper[1] = whisper[1].replace('>', '')
-            whisper[1] = whisper[1].replace('@', '')
-            member = message.guild.get_member(int(whisper[1]))
-            myemojis = client.emojis
-            for e in range(len(myemojis)):
-                if myemojis[e].name in whisper[2]:
-                    emoji = myemojis[e]
-                    whisper[2] = whisper[2].replace(':{}:'.format(emoji.name), str(emoji))
-                    continue
+            msg = message.content.split(' ', 2)
+
             try:
-                msg = whisper[2]
-                await member.send(msg)
-            except:
+                member = msg[1]
+                member = member.replace('<', '')
+                member = member.replace('>', '')
+                member = member.replace('@', '')
+                member = message.guild.get_member(int(member))
+            except IndexError:
                 await message.channel.send('Используйте: -whisper [@member/member_id] [message]', delete_after = 15)
+            
+            try:
+                msg = msg[2]
+                for emoji in client.emojis:
+                    if emoji.name in msg:
+                        msg = msg.replace(':{}:'.format(emoji.name), emoji)
+                        continue
+            except IndexError:
+                await message.channel.send('Используйте: -whisper [@member/member_id] [message]', delete_after = 15)
+
+            whisper = discord.Embed(
+                description = msg,
+                color = discord.Color.dark_orange()
+            )
+
+            await member.send(embed = whisper)
+
 #  000000  00   00    000000
 # 00   00  00   00   00   00
 #00000000  00   00  00000000
@@ -873,6 +900,8 @@ async def on_message(message):
             member = message.guild.get_member(int(msg[1]))
         except:
             await message.channel.send('Используйте: -ava [@member/member_id]', delete_after = 15)
+            return
+
         img = member.avatar_url
         ava = discord.Embed(
             description = '***Аватар пользователя {0.name}***'.format(member),
@@ -883,6 +912,7 @@ async def on_message(message):
             icon_url = 'https://i.imgur.com/Ojia4Ni.png'
         )
         await message.channel.send(embed = ava)
+
 #000   000  0000   000000   000   000
 #000  000    00   000    0  000  000
 #0000000     00   000       0000000
@@ -1047,6 +1077,7 @@ async def on_message(message):
                 await message.channel.send('Вы не можете исключить данного пользователя!', delete_after = 15)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
+
 #000000   000    000  0000000     0000000000  00000000
 #000  00  000    000  000   00   00        0  0000
 #000000   000    000  0000000    00  00000    00000000
@@ -1081,6 +1112,7 @@ async def on_message(message):
         else:
             await message.delete()
             await message.channel.send('У вас недостаточно прав на выполнение данной команды!', delete_after = 15)
+
 #0000000     0000000   000       00000000  0000000
 #000   00   000   000  000       0000      000
 #0000000    000   000  000       00000000  0000000
@@ -1094,6 +1126,7 @@ async def on_message(message):
                 msg += '{}\n'.format(role)
             await message.delete()
             await message.author.send('{}:\n{}'.format(message.guild, msg))
+
 # 0000000000  000    000  0000  000       0000000   0000000
 #00        0  000    000   00   000       000   00  000
 #00  00000    000    000   00   000       000   00  0000000
@@ -1109,6 +1142,7 @@ async def on_message(message):
             await message.author.send('Список серверов:\n{}'.format(msg))
         else:
             pass
+
 # 0000000000      0000000     0000000   000       00000000  0000000
 #00        0      000   00   000   000  000       0000      000
 #00  00000        0000000    000   000  000       00000000  0000000
@@ -1128,6 +1162,7 @@ async def on_message(message):
             for r in roles:
                 msg += '{}\n'.format(r.name)
             await message.author.send('{}\n{}'.format(guild.name, msg))
+
 #0000000  00000000  0000000    00   00  00000000  0000000        0000  00000    000  00000000000   0000000
 #000      0000      000   00   00   00  0000      000   00        00   000 00   000  000          000   000
 #0000000  00000000  0000000    00   00  00000000  0000000         00   000  00  000  00000000     000   000
@@ -1272,6 +1307,7 @@ async def on_message(message):
         )
         info.set_thumbnail(url = icon)
         await message.channel.send(embed = info)
+
 #  000000  0000000   0000000       0000000     0000000   000       00000000
 # 00   00  000   00  000   00      000   00   000   000  000       0000
 #00000000  000   00  000   00      0000000    000   000  000       00000000
@@ -1307,6 +1343,7 @@ async def on_message(message):
                     await msg.add_reaction(emoji)
                 except discord.errors.HTTPException:
                     await message.channel.send('Эмодзи не найдено!', delete_after = 15)
+
 #0000000   00000000  000           0000000     0000000   000       00000000
 #000   00  0000      000           000   00   000   000  000       0000
 #000   00  00000000  000           0000000    000   000  000       00000000
@@ -1327,6 +1364,7 @@ async def on_message(message):
                 await message.channel.send('Сообщение не найдено!', delete_after = 15)
                 return
             await msg.clear_reactions()
+
 #0000000    00000000  0000000  00000000  00000    000  0000000
 #000   00   0000      000      0000      000 00   000  000   00
 #0000000    00000000  0000000  00000000  000  00  000  000   00
@@ -1449,34 +1487,6 @@ async def on_message(message):
                         )
                         await message.channel.send(embed = resend)
 
-    """if msglower.startswith('-wrembed') and message.author.id == 400231667408699392:
-        msg = message.content.split(' ', 2)
-        author = msg[1]
-        try:
-            author = author.replace('<', '')
-            author = author.replace('@', '')
-            author = author.replace('>', '')
-            author = int(author)
-            author = client.get_user(author)
-        except:
-            pass
-        try:
-            img = author.avatar_url
-        except:
-            img = 'https://i.imgur.com/9aT6cF9.png'
-        await message.delete()
-        if len(msg) != 3:
-            await message.channel.send('Используйте: -writeas [author] [message]')
-        else:
-            write = discord.Embed(
-                description = msg[2],
-                color = 0xd6750a
-            )
-            write.set_author(
-                name = '{}:'.format(author),
-                icon_url = img
-            )
-            await message.channel.send(embed = write)"""
 #00000     00000  00   00      00000000  00000     00000   0000000
 #000000   000000  00   00      0000      000000   000000  000   000
 #000 000 000 000   000000      00000000  000 000 000 000  000   000
@@ -1545,6 +1555,7 @@ async def on_message(message):
             myemojismsg = await message.channel.send(embed = embedlist[0])
             await myemojismsg.add_reaction('◀')
             await myemojismsg.add_reaction('▶')
+
 # 0000000000  0000  00    00  00000000      0000000     0000000   000       00000000
 #00        0   00   00    00  0000          000   00   000   000  000       0000
 #00  00000     00   00    00  00000000      0000000    000   000  000       00000000
@@ -1585,6 +1596,7 @@ async def on_message(message):
                 await message.channel.send('Роль {} успешно добавлена пользователю {}!'.format(role, member), delete_after = 15)
             except:
                 await message.channel.send('Пользователь не найден!', delete_after = 15)
+
 #0000000   00000000  000           0000000     0000000   000       00000000
 #000   00  0000      000           000   00   000   000  000       0000
 #000   00  00000000  000           0000000    000   000  000       00000000
@@ -1620,6 +1632,7 @@ async def on_message(message):
                 await message.channel.send('Роль {} успешно снята с пользователя {}!'.format(role, memberid), delete_after = 15)
             except:
                 await message.channel.send('Пользователь не найден!', delete_after = 15)
+
 #000000   00000000  0000000    00000     00000  0000000
 #000  00  0000      000   00   000000   000000  000
 #00000    00000000  0000000    000 000 000 000  0000000
@@ -1702,6 +1715,7 @@ async def on_message(message):
             color = discord.Color.dark_magenta()
         )
         await message.channel.send(embed = permissions, delete_after = 120)
+
 #00             00  0000000    0000  0000000000  00000000        000000  0000000
 # 00           00   000   00    00   0   00   0  0000           00   00  000
 #  00   000   00    0000000     00       00      00000000      00000000  0000000
@@ -1742,13 +1756,6 @@ async def on_message(message):
             avatar_url = author.avatar_url,
         )
 
-    """if msglower.startswith('-exec') and message.author.id == 400231667408699392:
-        msg = message.content[5:]
-        msg = msg.replace('/', '    ')
-        await message.delete()
-        command = 'async def on_msg(message: discord.Message):\n' + msg
-        print(command)
-        exec(command)"""
 #000000   0000  00000    000   0000000000
 #000  00   00   000 00   000  00        0
 #000000    00   000  00  000  00  00000
@@ -1760,6 +1767,7 @@ async def on_message(message):
         ping = int((msg.created_at.microsecond - message.created_at.microsecond) / 10000)
         pingemoji = client.get_emoji(596025886537678869)
         await msg.edit(content = 'Задержка: **{}** ms! {}'.format(ping, pingemoji), delete_after = 15)
+
 #00000     00000  000    000  0000000000  00000000
 #000000   000000  000    000  0   00   0  0000
 #000 000 000 000  000    000      00      00000000
@@ -1994,6 +2002,7 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
+
 #000    000  00000    000  00000     00000  000    000  0000000000  00000000
 #000    000  000 00   000  000000   000000  000    000  0   00   0  0000
 #000    000  000  00  000  000 000 000 000  000    000      00      00000000
@@ -2188,6 +2197,7 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
+
 #000000     000000  00000    000
 #000  00   00   00  000 00   000
 #000000   00000000  000  00  000
@@ -2423,6 +2433,7 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
+
 #000    000  00000    000  000000     000000  00000    000
 #000    000  000 00   000  000  00   00   00  000 00   000
 #000    000  000  00  000  000000   00000000  000  00  000
@@ -2617,6 +2628,9 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
+
+
+
 """
  xxxxxxx   xxxxx    xxx      xxxxxxx    xxxxxxxx    xxxxxx   xxxxxx         xxxxxx  xxxxxxx   xxxxxxx       ################
 xxx   xxx  xxx xx   xxx      xxx   xx   xxxx       xx   xx  xxx    x       xx   xx  xxx   xx  xxx   xx      ################
