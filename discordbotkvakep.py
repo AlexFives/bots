@@ -6,6 +6,7 @@ import time
 import datetime
 import os
 import math
+import colormap
 
 
 
@@ -26,7 +27,13 @@ topfact10 = ''
 
 
 
+
+
+
 client = discord.Client()
+
+
+
 
 
 
@@ -37,7 +44,7 @@ xxx       xxxxxxxxx  xxxxxxxx  xxx       xxxxxxx        ################
 xxx    x  xxx   xxx  xxxx      xxx    x  xxx  xxx       ################
  xxxxxx   xxx   xxx  xxxxxxxx   xxxxxx   xxx   xxx      ################
 """
-async def punish_check():
+async def checks():
     while True:
         with open('kvakepmutedmembers.txt', 'r') as fin:
             with open('kvakepmutedmembersnew.txt', 'w') as fout:
@@ -408,6 +415,140 @@ async def punish_check():
             os.renames('kvakepbannedmembersnew.txt', 'kvakepbannedmembers.txt')
         except:
             pass
+
+        claninvites = open('claninvites.txt', 'r')
+        lines = claninvites.readlines()
+        claninvites.close()
+
+        for line in lines:
+            try:
+                channel = re.search(r'ChannelId: \d*', line)
+                channel = channel.group(0)
+                channel = channel[11:]
+                channel = client.get_channel(int(channel))
+
+                msgid = re.search(r'MessageId: \d*;', line)
+                msgid = msgid.group(0)
+                msgid = msgid[11:]
+                msgid = msgid.replace(';', '')
+                msgid = int(msgid)
+
+                channelhistory = await channel.history().flatten()
+                for c in channelhistory:
+                    if c.id == msgid:
+                        msgid = c
+                        break
+
+                guild = re.search(r'Guild: \d*;', line)
+                guild = guild.group(0)
+                guild = guild[7:]
+                guild = guild.replace(';', '')
+                guild = client.get_guild(int(guild))
+
+                member = re.search(r'Member: \d*;', line)
+                member = member.group(0)
+                member = member[8:]
+                member = member.replace(';', '')
+                member = guild.get_member(int(member))
+
+                author = re.search(r'Author: \d*;', line)
+                author = author.group(0)
+                author = author[8:]
+                author = author.replace(';', '')
+                author = guild.get_member(int(author))
+
+                clanrole = re.search(r'Clan: \d*;', line)
+                clanrole = clanrole.group(0)
+                clanrole = clanrole[6:]
+                clanrole = clanrole.replace(';', '')
+                clanrole = guild.get_role(int(clanrole))
+                clanname = clanrole.name
+                clanname = clanname[7:]
+
+            except:
+                pass
+            
+            try:
+                reactions = msgid.reactions
+                for r in reactions:
+                    if str(r.emoji) == '👍' and r.count == 2:
+                        usrs = await r.users().flatten()
+                        for u in usrs:
+                            if member == u:
+                                await msgid.edit(content = 'Вы вступили в клан {}'.format(clanname), embed = None)
+                                lines.remove(line)
+                                break
+                        else:
+                            return
+
+                    elif str(r.emoji) == '👎' and r.count == 2:
+                        usrs = await r.users().flatten()
+                        for u in usrs:
+                            if member == u:
+                                await msgid.delete()
+                                lines.remove(line)
+                                break
+                        else:
+                            return
+
+                textname = clanname.replace(' ', '-')
+                textname = textname.replace('!', '')
+                textname = textname.replace('@', '')
+                textname = textname.replace('#', '')
+                textname = textname.replace('$', '')
+                textname = textname.replace('%', '')
+                textname = textname.replace('^', '')
+                textname = textname.replace('&', '')
+                textname = textname.replace('*', '')
+                textname = textname.replace('(', '')
+                textname = textname.replace(')', '')
+                textname = textname.replace('~', '-')
+                textname = textname.replace(';', '')
+                textname = textname.replace(':', '')
+                textname = textname.replace('\'', '')
+                textname = textname.replace('"', '')
+                textname = textname.replace('/', '')
+                textname = textname.replace('\\', '')
+                textname = textname.replace('|', '')
+                textname = textname.replace('+', '')
+                textname = textname.replace('?', '')
+                textname = textname.replace(',', '')
+                textname = textname.replace('№', '')
+                textname = textname.replace('`', '')
+                textname = textname.replace('', '')
+                textname = textname.lower()
+
+                deadpool = client.get_emoji(596695098205405185)
+                joinembed = discord.Embed(
+                    title = 'ClanInfo: ',
+                    description = 'Пользователь {} вступил в клан!\nДобро пожаловать!\n{}'.format(member.mention, deadpool),
+                    color = clanrole.color
+                )
+                joinembed.set_footer(
+                    text = 'Пригласил {}'.format(author),
+                    icon_url = author.avatar_url
+                )
+
+                for t in guild.text_channels:
+                    if t.name == textname:
+                        await t.send(embed = joinembed)
+                        break
+
+                await member.add_roles(clanrole)
+
+            except:
+                pass
+            
+            claninvitesnew = open('claninvitesnew.txt', 'w')
+            claninvitesnew.writelines(lines)
+            claninvitesnew.close()
+
+            try:
+                os.remove('claninvites.txt')
+                os.renames('claninvitesnew.txt', 'claninvites.txt')
+            except:
+                pass
+
         await asyncio.sleep(10)
 
 
@@ -425,9 +566,7 @@ async def on_ready():
     print('----------')
     await client.change_presence(status=discord.Status.dnd, activity=botstream)
     loop = asyncio.get_event_loop()
-    asyncio.ensure_future(punish_check())
-
-
+    asyncio.ensure_future(checks())
 
 """
  xxxxxxx   xxxxx    xxx      xxxxx     xxxxx  xxxxxxx   xxxxxxxxxx      ################
@@ -1295,62 +1434,98 @@ async def on_message(message):
         info.set_thumbnail(url = icon)
         await message.channel.send(embed = info)
 
-#  000000  0000000   0000000       0000000     0000000   000       00000000
-# 00   00  000   00  000   00      000   00   000   000  000       0000
-#00000000  000   00  000   00      0000000    000   000  000       00000000
-#00    00  000   00  000   00      000   00   000   000  0000      0000
-#00    00  0000000   0000000       000    00   0000000   00000000  00000000
+#  000000  0000000   0000000       0000000    00000000    000000   000000
+# 00   00  000   00  000   00      000   00   0000       00   00  000    0
+#00000000  000   00  000   00      0000000    00000000  00000000  000
+#00    00  000   00  000   00      000   00   0000      00    00  000    0
+#00    00  0000000   0000000       000    00  00000000  00    00   000000
     if msglower.startswith('-addreac') and message.author.id == 400231667408699392:
-        msg = message.content.split(' ')
         await message.delete()
-        if len(msg) < 3:
-            await message.channel.send('Используйте: -addreac [message_id] [emoji]', delete_after = 15)
-        else:
-            msg[2] = msg[2].replace(':', '')
-            emo = client.emojis
-            for e in range(len(emo)):
-                emoji = emo[e]
-                if msg[2] in str(emoji):
+        msg = message.content.split(' ')
+        
+        msghistory = await message.channel.history(limit = 100).flatten()
+        try:
+            for m in msghistory:
+                if int(msg[1]) == m.id:
+                    mes = m
                     break
             else:
-                emoji = msg[2]
-            msghistory = await message.channel.history(limit = 100).flatten()
-            for m in range(len(msghistory)):
-                if int(msg[1]) == msghistory[m].id:
-                    msg = msghistory[m]
-                    break
-            else:        
                 await message.channel.send('Сообщение не найдено!', delete_after = 15)
-                return
-            try:
-                await msg.add_reaction(emoji)
-            except discord.errors.HTTPException:
-                emoji = emoji.replace(':', '')
+        
+        except IndexError:
+            await message.channel.send('Используйте: -addreac [message_id] [reaction]', delete_after = 15)
+            return
+        
+        myemojis = client.emojis
+        try:
+            for e in myemojis:
+                if e.name in msg[2]:
+                    emoji = e
+                    await mes.add_reaction(emoji)
+                    break
+            else:
                 try:
-                    await msg.add_reaction(emoji)
-                except discord.errors.HTTPException:
+                    await mes.add_reaction(msg[2])
+                except:
                     await message.channel.send('Эмодзи не найдено!', delete_after = 15)
+        except IndexError:
+            await message.channel.send('Используйте: -addreac [message_id] [reaction]', delete_after = 15)
+            return
 
-#0000000   00000000  000           0000000     0000000   000       00000000
-#000   00  0000      000           000   00   000   000  000       0000
-#000   00  00000000  000           0000000    000   000  000       00000000
-#000   00  0000      0000          000   00   000   000  0000      0000
-#0000000   00000000  00000000      000    00   0000000   00000000  00000000
-    if msglower.startswith('-delreacts') and message.author.id == 400231667408699392:
-        msg = message.content.split(' ')
+    if msglower.startswith('-removereac') and message.author.id == 400231667408699392:
         await message.delete()
-        if len(msg) != 2:
-            await message.channel.send('Используйте: -delreacts [message_id]', delete_after = 15)
-        else:
-            msghistory = await message.channel.history(limit = 100).flatten()
-            for m in range(len(msghistory)):
-                if int(msg[1]) == msghistory[m].id:
-                    msg = msghistory[m]
+        msg = message.content.split(' ')
+        
+        msghistory = await message.channel.history(limit = 100).flatten()
+        try:
+            for m in msghistory:
+                if int(msg[1]) == m.id:
+                    mes = m
                     break
             else:
                 await message.channel.send('Сообщение не найдено!', delete_after = 15)
-                return
-            await msg.clear_reactions()
+        
+        except IndexError:
+            await message.channel.send('Используйте: -removereac [message_id] [reaction]', delete_after = 15)
+            return
+        
+        myemojis = client.emojis
+        try:
+            for e in myemojis:
+                if e.name in msg[2]:
+                    emoji = e
+                    await mes.remove_reaction(emoji, message.guild.me)
+                    break
+            else:
+                try:
+                    await mes.remove_reaction(msg[2], message.guild.me)
+                except:
+                    await message.channel.send('Эмодзи не найдено!', delete_after = 15)
+        except IndexError:
+            await message.channel.send('Используйте: -removereac [message_id] [reaction]', delete_after = 15)
+            return
+
+#0000000   00000000  000           0000000    00000000    000000   000000
+#000   00  0000      000           000   00   0000       00   00  000    0
+#000   00  00000000  000           0000000    00000000  00000000  000
+#000   00  0000      0000          000   00   0000      00    00  000    0
+#0000000   00000000  00000000      000    00  00000000  00    00   000000
+    if msglower.startswith('-delreacts') and message.author.id == 400231667408699392:
+        await message.delete()
+        msg = message.content.split(' ')
+        
+        msghistory = message.channel.history(limit = 100).flatten()
+        try:
+            for m in msghistory:
+                if int(msg[1]) == m.id:
+                    msg = m
+                    await msg.clear_reactions()
+                    break
+            else:
+                await message.channel.send('Сообщение не найдено!', delete_after = 15)
+        except IndexError:
+            await message.channel.send('Используйте: -delreacts [message_id]', delete_after = 15)
+            return
 
 #0000000    00000000  0000000  00000000  00000    000  0000000
 #000   00   0000      000      0000      000 00   000  000   00
@@ -2615,6 +2790,1128 @@ async def on_message(message):
             await member.send(embed = tomember)
         else:
             await message.channel.send('У Вас недостаточно прав на выполнение данной команды!', delete_after = 15)
+
+# 000000   000         000000  00000    000  0000000
+#000    0  000        00   00  000 00   000  000
+#000       000       00000000  000  00  000  0000000
+#000    0  0000      00    00  000   00 000      000
+# 000000   00000000  00    00  000    00000  0000000
+
+    if msglower.startswith('-clan'):
+
+        if msglower.startswith('-clan create'):
+            await message.delete()
+            msg = message.content.split(' ', 3)
+
+            try:
+                clancolor = msg[2]
+                clancolor = colormap.hex2rgb(clancolor)
+            except IndexError:
+                await message.channel.send('Используйте: -clan create [#цвет(hex)] [название]', delete_after = 15)
+                return
+            except ValueError:
+                await message.channel.send('Неизвестный цвет. Используйте hex код (#123abc)!', delete_after = 15)
+                return
+            try:
+                clanname = msg[3]
+            except IndexError:
+                await message.channel.send('Используйте: -clan create [#цвет(hex)] [название]', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if '[Клан] ' in r.name:
+                    await message.channel.send('Вы уже состоите в клане!', delete_after = 15)
+                    return
+
+            for r in message.guild.roles:
+                if r.name[7:].lower() == clanname.lower():
+                    await message.channel.send('Такой клан уже создан! Используйте другой тэг!', delete_after = 15)
+                    return
+
+            for r in message.guild.roles:
+                if r.name == '[Кланы] Leader':
+                    leaderrole = r
+                    break
+            else:
+                leaderrole = await message.guild.create_role(name = '[Кланы] Leader', color = discord.Color.default())
+            
+            pos = leaderrole.position
+
+            try:
+                clanrole = await message.guild.create_role(name = '[Клан] {}'.format(clanname), color = discord.Color.from_rgb(clancolor[0], clancolor[1], clancolor[2]), mentionable = True, hoist = True)
+            except:
+                await message.channel.send('Неизвестный цвет!', delete_after = 15)
+                return
+
+            await clanrole.edit(position = pos)
+
+            perms = {
+                message.guild.default_role: discord.PermissionOverwrite(read_messages = False, send_messages = False, connect = False),
+                clanrole: discord.PermissionOverwrite(read_messages = True, send_messages = True, speak = True, connect = True)
+            }
+
+            clapping = client.get_emoji(596690598023528449)
+            createembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = 'Клан создан!\n{}'.format(clapping),
+                color = clanrole.color
+            )
+            for c in message.guild.categories:
+                if c.name == '[Кланы]':
+                    cat = c
+                    clantext = await cat.create_text_channel(name = clanname, overwrites = perms)
+                    await cat.create_voice_channel(name = clanname, overwrites = perms)
+                    await clantext.send(clanrole.mention)
+                    await clantext.send(embed = createembed)
+                    break
+            else:
+                cat = await message.guild.create_category_channel(name = '[Кланы]')
+                clantext = await cat.create_text_channel(name = clanname, overwrites = perms)
+                await cat.create_voice_channel(name = clanname, overwrites = perms)
+                await clantext.send(clanrole.mention)
+                await clantext.send(embed = createembed)
+                
+
+            await message.author.add_roles(clanrole)
+            await message.author.add_roles(leaderrole)
+
+        elif msglower.startswith('-clan invite'):
+            await message.delete()
+            msg = message.content.split(' ', 2)
+            try:
+                member = msg[2]
+                member = member.replace('<', '')
+                member = member.replace('@', '')
+                member = member.replace('>', '')
+                member = message.guild.get_member(int(member))
+            except IndexError:
+                await message.channel.send('Используйте: -clan invite [@member/member_id]', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if r.name == '[Кланы] Leader' or r.name == '[Кланы] Officer':
+                    break
+            else:
+                await message.channel.send('У Вас недостаточно прав!', delete_after = 15)
+                return
+
+            for r in member.roles:
+                if '[Клан] ' in r.name:
+                    await message.channel.send('Пользователь уже состоит в клане!', delete_after = 15)
+                    return
+            
+            for r in message.author.roles:
+                if '[Клан] ' in r.name:
+                    clanname = r.name[7:]
+                    clanrole = r
+                    clancolor = r.color
+                    break
+            else:
+                await  message.channel.send('Вы не состоите в клане!', delete_after = 15)
+                return
+            
+            invitationletter = discord.Embed(
+                title = 'ClanInfo: ',
+                description = 'Пользователь {} пригласил Вас в клан {}.\nЧтобы принять приглашение, нажмите :thumbsup:, если же хотите отклонить его, нажмите :thumbsdown:'.format(message.author, clanname),
+                color = clancolor
+            )
+
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            funnyblock = client.get_emoji(596690597092524033)
+            inviteembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} пригласил в клан {}!\n{}'.format(message.author.mention, member.mention, funnyblock),
+                color = clanrole.color
+            )
+
+            for t in message.guild.text_channels:
+                if t.name == textname:
+                    await t.send(embed = inviteembed)
+                    break
+
+            invitation = await member.send(embed = invitationletter)
+            await invitation.add_reaction('👍')
+            await invitation.add_reaction('👎')
+
+            invites = open('claninvites.txt', 'a')
+            invites.write('Guild: {}; Author: {}; Clan: {}; Member: {}; MessageId: {}; ChannelId: {}\n'.format(message.guild.id, message.author.id, clanrole.id, member.id, invitation.id, invitation.channel.id))
+            invites.close()
+
+        elif msglower.startswith('-clan promote'):
+            await message.delete()
+            msg = message.content.split(' ', 2)
+            
+            try:
+                member = msg[2]
+                member = member.replace('<', '')
+                member = member.replace('@', '')
+                member = member.replace('>', '')
+                member = message.guild.get_member(int(member))
+            except IndexError:
+                await message.channel.send('Используйте: -clan promote [@member/member_id]', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if '[Клан]' in r.name:
+                    clanrole = r
+                    clanname = r.name
+                    clanname = clanname[7:]
+                    break
+            else:
+                await message.channel.send('У Вас нет клана!', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if r.name ==  '[Кланы] Leader':
+                    break
+            else:
+                await message.channel.send('Вы не являетесь лидером клана!', delete_after = 15)
+                return
+
+            for r in message.guild.roles:
+                if r.name == '[Кланы] Officer':
+                    officerrole = r
+                    break
+            else:
+                officerrole = await message.guild.create_role(name = '[Кланы] Officer')
+
+            for r in member.roles:
+                if r == clanrole:
+                    await member.add_roles(officerrole)
+                    break
+            else:
+                await message.channel.send('Пользователь не состоит в Вашем клане!', delete_after = 15)
+                return
+
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            dog = client.get_emoji(596690644467187723)
+            promoteembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} назначил {} на должность офицера клана!\n{}'.format(message.author.mention, member.mention, dog),
+                color = clanrole.color
+            )
+
+            tomember = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} назначил Вас на должность офицера клана {}!\n{}'.format(message.author, clanname, dog),
+                color = clanrole.color
+            )
+
+            for t in message.guild.text_channels:
+                if t.name == textname:
+                    await t.send(embed = promoteembed)
+                    break
+
+            await member.send(embed = tomember)
+
+        elif msglower.startswith('-clan demote'):
+            await message.delete()
+            msg = message.content.split(' ', 2)
+
+            try:
+                member = msg[2]
+                member = member.replace('<', '')
+                member = member.replace('@', '')
+                member = member.replace('>', '')
+                member = message.guild.get_member(int(member))
+            except IndexError:
+                await message.channel.send('Используйте: -clan demote [@member/member_id]', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if '[Клан]' in r.name:
+                    clanrole = r
+                    clanname = r.name
+                    clanname = clanname[7:]
+                    break
+            else:
+                await message.channel.send('Вы не состоите в клане!', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if r.name == '[Кланы] Leader':
+                    break
+            else:
+                await message.channel.send('Вы не являетесь лидером клана!', delete_after = 15)
+                return
+
+            for r in message.guild.roles:
+                if r.name == '[Кланы] Officer':
+                    officerrole = r
+                    break
+            else:
+                officerrole = await message.guild.create_role(name = '[Кланы] Officer')
+
+            for r in member.roles:
+                if r.name == '[Кланы] Leader':
+                    await message.channel.send('Пользователь является лидером клана!', delete_after = 15)
+                    return
+
+            for r in member.roles:
+                if r == officerrole:
+                    break
+            else:
+                await message.channel.send('Пользователь не является офицером клана!', delete_after = 15)
+                return
+
+            for r in member.roles:
+                if r == clanrole:
+                    await member.remove_roles(officerrole)
+                    break
+            else:
+                await message.channel.send('Пользователь не состоит в Вашем клане!', delete_after = 15)
+                return
+
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            fingerwave = client.get_emoji(596697124654022668)
+            demoteembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} снял {} с должности офицера клана!\n{}'.format(message.author.mention, member.mention, fingerwave),
+                color = clanrole.color
+            )
+
+            tomember = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} снял Вас с должности офицера клана {}!\n{}'.format(message.author, clanname, fingerwave),
+                color = clanrole.color
+            )
+
+            for t in message.guild.text_channels:
+                if t.name == textname:
+                    await t.send(embed = demoteembed)
+                    break
+
+            await member.send(embed = tomember)
+
+        elif msglower.startswith('-clan kick'):
+            await message.delete()
+            msg = message.content.split(' ', 2)
+
+            try:
+                member = msg[2]
+                member = member.replace('>', '')
+                member = member.replace('@', '')
+                member = member.replace('<', '')
+                member = message.guild.get_member(int(member))
+            except IndexError:
+                await message.channel.send('Используйте: -clan kick [@member/member_id]', delete_after = 15)
+                return
+            
+            for r in message.author.roles:
+                if '[Клан] ' in r.name:
+                    clanrole = r
+                    clanname = r.name
+                    clanname = clanname[7:]
+                    break
+            else:
+                await message.channel.send('Вы не состоите в клане!', delete_after = 15)
+                return
+            
+            for r in message.guild.roles:
+                if r.name == '[Кланы] Officer':
+                    officerrole = r
+                    break
+
+            for r in message.author.roles:
+                if r.name == '[Кланы] Leader' or r.name == '[Кланы] Officer':
+                    role = r
+                    break
+            else:
+                await message.channel.send('Вы не являетесь лидером или офицером клана!', delete_after = 15)
+                return
+
+            for r in member.roles:
+                if r == clanrole:
+                    break
+            else:
+                await message.channel.send('Пользователь не состоит в Вашем клане!', delete_after = 15)
+                return
+
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            for t in message.guild.text_channels:
+                if t.name == textname:
+                    textname = t
+                    break
+
+            byebye = client.get_emoji(594523484529491988)
+            ckickembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} исключил из клана {}!\n{}'.format(message.author.mention, member.mention, byebye),
+                color = clanrole.color
+            )
+
+            tomember = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} исключил Вас из клана {}.\n{}'.format(message.author, clanname, byebye),
+                color = clanrole.color
+            )
+
+            for r in member.roles:
+                if r.name == '[Кланы] Leader':
+                    await message.channel.send('Вы не можете исключить лидера клана!', delete_after = 15)
+                    return
+                elif r.name == '[Кланы] Officer':
+                    if role.name == '[Кланы] Officer':
+                        await message.channel.send('Вы не можете исключить офицера клана!', delete_after = 15)
+                        return
+                    elif role.name == '[Кланы] Leader':
+                        await member.remove_roles(clanrole)
+                        await member.remove_roles(officerrole)
+                        await textname.send(embed = ckickembed)
+                        await member.send(embed = tomember)
+                        return
+                elif r == clanrole:
+                    await member.remove_roles(clanrole)
+                    await member.remove_roles(officerrole)
+                    await textname.send(embed = ckickembed)
+                    await member.send(embed = tomember)
+                    return
+
+        elif msglower.startswith('-clan leader'):
+            await message.delete()
+            msg = message.content.split(' ', 2)
+
+            try:
+                member = msg[2]
+                member = member.replace('<', '')
+                member = member.replace('@', '')
+                member = member.replace('>', '')
+                member = message.guild.get_member(int(member))
+            except IndexError:
+                await message.channel.send('Используйте: -clan leader [@member/member_id]', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if '[Клан] ' in r.name:
+                    clanrole = r
+                    clanname = r.name
+                    clanname = clanname[7:]
+                    break
+            else:
+                await message.channel.send('Вы не состоите в клане!', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if r.name == '[Кланы] Leader':
+                    break
+            else:
+                await message.channel.send('Вы не являетесь лидером клана!', delete_after = 15)
+                return
+
+            for r in member.roles:
+                if r == clanrole:
+                    break
+            else:
+                await message.channel.send('Пользователь не состоит в Вашем клане!', delete_after = 15)
+                return
+
+            for r in message.guild.roles:
+                if r.name == '[Кланы] Leader':
+                    leaderrole = r
+                if r.name == '[Кланы] Officer':
+                    officerrole = r
+
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            for t in message.guild.text_channels:
+                if t.name == textname:
+                    textname = t
+                    break
+
+            lilsharky = client.get_emoji(596690338970599424)
+            leaderembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} передал {} право на управление кланом. {}'.format(message.author.mention, member.mention, lilsharky),
+                color = clanrole.color
+            )
+
+            tomember = discord.Embed(
+                title = 'ClanInfo: ',
+                description = 'Пользователь {} назначил Вас лидером клана {}!\n{}'.format(message.author, clanname, lilsharky),
+                color = clanrole.color
+            )
+
+            await member.remove_roles(officerrole)
+            await member.add_roles(leaderrole)
+            await message.author.remove_roles(leaderrole)
+            await message.author.add_roles(officerrole)
+            await textname.send(embed = leaderembed)
+            await member.send(embed = tomember)
+
+        elif msglower.startswith('-clan leave'):
+            await message.delete()
+            
+            for r in message.author.roles:
+                if r.name == '[Кланы] Leader':
+                    await message.channel.send('Вы не можете покинуть клан, являясь лидером!', delete_after = 15)
+                    return
+                if '[Клан] ' in r.name:
+                    clanrole = r
+                    clanname = r.name
+                    clanname = clanname[7:]
+                    break
+            else:
+                await message.channel.send('Вы не состоите в клане!', delete_after = 15)
+                return
+
+            for r in message.guild.roles:
+                if r.name == '[Кланы] Officer':
+                    officerrole = r
+                    break
+            
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            for t in message.guild.text_channels:
+                if t.name == textname:
+                    textname = t
+                    break
+
+            plak = client.get_emoji(594173858085470208)
+            leaveembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} покинул наш клан! {}'.format(message.author.mention, plak),
+                color = clanrole.color
+            )
+
+            await textname.send(embed = leaveembed)
+            await message.author.remove_roles(officerrole)
+            await message.author.remove_roles(clanrole)
+
+        elif msglower.startswith('-clan color'):
+            await message.delete()
+            msg = message.content.split(' ', 2)
+
+            try:
+                color = msg[2]
+                color = colormap.hex2rgb(color)
+            except IndexError:
+                await message.channel.send('Используйте: -clan color [#цвет]', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if '[Клан] ' in r.name:
+                    clanrole = r
+                    clanname = r.name
+                    clanname = clanname[7:]
+                    break
+            else:
+                await message.channel.send('Вы не состоите в клане!', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if r.name == '[Кланы] Leader':
+                    break
+            else:
+                await message.channel.send('Вы не являетесь лидером клана!', delete_after = 15)
+                return
+
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            for t in message.guild.text_channels:
+                if t.name == textname:
+                    textname = t
+                    break
+
+            await clanrole.edit(color = discord.Color.from_rgb(color[0], color[1], color[2]))
+
+            rainbowfrog = client.get_emoji(596776228522819596)
+            colorembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} изменил цвет клана!\n{}'.format(message.author.mention, rainbowfrog),
+                color = clanrole.color
+            )
+
+            await textname.send(embed = colorembed)
+
+        elif msglower.startswith('-clan delete'):
+            await message.delete()
+            
+            for r in message.author.roles:
+                if '[Клан] ' in r.name:
+                    clanrole = r
+                    clanname = r.name
+                    clanname = clanname[7:]
+                    break
+            else:
+                await message.channel.send('Вы не состоите в клане!', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if r.name == '[Кланы] Leader':
+                    break
+            else:
+                await message.channel.send('Вы не являетесь лидером клана!', delete_after = 15)
+                return
+
+            for r in message.guild.roles:
+                if r.name == '[Кланы] Leader':
+                    leaderrole = r
+                if r.name == '[Кланы] Officer':
+                    officerrole = r
+
+            withclanrole = []
+            for m in message.guild.members:
+                for r in m.roles:
+                    if r == clanrole:
+                        withclanrole.append(m)
+
+            hnik = client.get_emoji(590810923820777473)
+            deleteembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} удалил клан {}!\n{}'.format(message.author, clanname, hnik),
+                color = clanrole.color
+            )
+
+            for m in withclanrole:
+                for r in m.roles:
+                    if r.name == '[Кланы] Officer':
+                        await m.remove_roles(officerrole)
+                        await m.send(embed = deleteembed)
+                        break
+            
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            for t in message.guild.text_channels:
+                if t.name == textname:
+                    await t.delete()
+                    break
+
+            for t in message.guild.voice_channels:
+                if t.name == clanname:
+                    await t.delete()
+                    break            
+
+            await clanrole.delete()
+            await message.author.remove_roles(leaderrole)
+
+        elif msglower.startswith('-clan name'):
+            await message.delete()
+            msg = message.content.split(' ', 2)
+
+            try:
+                newname = msg[2]
+            except IndexError:
+                await message.channel.send('Используйте: -clan name [name]', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if '[Клан] ' in r.name:
+                    clanrole = r
+                    clanname = r.name
+                    clanname = clanname[7:]
+                    break
+            else:
+                await message.channel.send('Вы не состоите в клане!', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if r.name == '[Кланы] Leader':
+                    break
+            else:
+                await message.channel.send('Вы не являетесь лидером клана!', delete_after = 15)
+                return
+
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            for c in message.guild.categories:
+                if c.name == '[Кланы]':
+                    cat = c
+                    break
+
+            for t in cat.text_channels:
+                if t.name == textname:
+                    text = t
+                    await t.edit(name = newname)
+                    break
+
+            for v in cat.voice_channels:
+                if v.name == clanname:
+                    await v.edit(name = newname)
+                    break
+
+            pikachu = client.get_emoji(596690633431842822)
+            nameembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} изменил название клана на {}!\n{}'.format(message.author.mention, newname, pikachu),
+                color = clanrole.color
+            )
+
+            await clanrole.edit(name = '[Клан] {}'.format(newname))
+            await text.send(embed = nameembed)
+
+        elif msglower.startswith('-clan desc'):
+            await message.delete()
+            msg = message.content.split(' ', 2)
+
+            try:
+                desc = msg[2]
+            except IndexError:
+                await message.channel.send('Используйте: -clan desc [описание]', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if '[Клан] ' in r.name:
+                    clanrole = r
+                    clanname = r.name
+                    clanname = clanname[7:]
+                    break
+            else:
+                await message.channel.send('Вы не состоите в клане!', delete_after = 15)
+                return
+
+            for r in message.author.roles:
+                if r.name == '[Кланы] Leader':
+                    break
+            else:
+                await message.channel.send('Вы не являетесь лидером клана!', delete_after = 15)
+                return
+
+            textname = clanname.replace(' ', '-')
+            textname = textname.replace('!', '')
+            textname = textname.replace('@', '')
+            textname = textname.replace('#', '')
+            textname = textname.replace('$', '')
+            textname = textname.replace('%', '')
+            textname = textname.replace('^', '')
+            textname = textname.replace('&', '')
+            textname = textname.replace('*', '')
+            textname = textname.replace('(', '')
+            textname = textname.replace(')', '')
+            textname = textname.replace('~', '-')
+            textname = textname.replace(';', '')
+            textname = textname.replace(':', '')
+            textname = textname.replace('\'', '')
+            textname = textname.replace('"', '')
+            textname = textname.replace('/', '')
+            textname = textname.replace('\\', '')
+            textname = textname.replace('|', '')
+            textname = textname.replace('+', '')
+            textname = textname.replace('?', '')
+            textname = textname.replace(',', '')
+            textname = textname.replace('№', '')
+            textname = textname.replace('`', '')
+            textname = textname.replace('', '')
+            textname = textname.lower()
+
+            hack = client.get_emoji(594522221683277825)
+            descembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} изменил описание клана на {}\n{}'.format(message.author.mention, desc, hack),
+                color = clanrole.color
+            )
+            descdelembed = discord.Embed(
+                title = 'ClanInfo: ',
+                description = '{} убрал описание клана.\n{}'.format(message.author.mention, hack),
+                color = clanrole.color
+            )
+
+            for t in message.guild.text_channels:
+                if t.name == textname:
+                    if desc != 'delete':
+                        await t.edit(topic = desc)
+                        await t.send(embed = descembed)
+                    else:
+                        await t.edit(topic = None)
+                        await t.send(embed = descdelembed)
+                    break
+
+        elif msglower.startswith('-clan info'):
+            await message.delete()
+            msg = message.content.split(' ', 2)
+
+            try:
+                clan = msg[2]
+                clan = clan.replace('<', '')
+                clan = clan.replace('@', '')
+                clan = clan.replace('&', '')
+                clan = clan.replace('>', '')
+                clan = message.guild.get_role(int(clan))
+                clanname = clan.name
+                clanname = clanname[7:]
+            except IndexError:
+                await message.channel.send('Используйте: -clan info [@clanrole/role_id]', delete_after = 15)
+                return
+
+            created = clan.created_at.date()
+            year = created.year
+            month = created.month
+            if month == 1:
+                month = 'января'
+            elif month == 2:
+                month = 'февраля'
+            elif month == 3:
+                month = 'марта'
+            elif month == 4:
+                month = 'апреля'
+            elif month == 5:
+                month = 'мая'
+            elif month == 6:
+                month = 'июня'
+            elif month == 7:
+                month = 'июля'
+            elif month == 8:
+                month = 'августа'
+            elif month == 9:
+                month = 'сентября'
+            elif month == 10:
+                month = 'октября'
+            elif month == 11:
+                month = 'ноября'
+            elif month == 12:
+                month = 'декабря'
+            day = created.day
+
+            members = []
+            officers = []
+            online = 0
+
+            for m in message.guild.members:
+                for r in m.roles:
+                    if r == clan:
+                        members.append(m)
+
+            for m in members:
+                for r in m.roles:
+                    if r.name == '[Кланы] Leader':
+                        leader = m
+                        break
+                    if r.name == '[Кланы] Officer':
+                        officers.append(m)
+                        break
+                if m.status != discord.Status.offline:
+                    online += 1
+
+            mem = ''
+            for m in officers:
+                mem += m.mention + '\n'
+
+            info = discord.Embed(
+                description =  'Информация о клане {}:'.format(clanname),
+                color = clan.color
+            )
+            info.add_field(
+                name = 'Роль: ',
+                value = '{}'.format(clan.mention),
+                inline = True
+            )
+            info.add_field(
+                name = 'Лидер: ',
+                value = '{}'.format(leader.mention),
+                inline = True
+            )
+            info.add_field(
+                name = 'Создан: ',
+                value = '{} {} {}'.format(day, month, year),
+                inline = True
+            )
+            info.add_field(
+                name = 'Участников: ',
+                value = '{}'.format(len(members)),
+                inline = True
+            )
+            info.add_field(
+                name = 'Участников онлайн: ',
+                value = '{}'.format(online),
+                inline = True
+            )
+            info.add_field(
+                name = 'Офицеры: ',
+                value = '{}'.format(mem),
+                inline = True
+            )
+
+            await message.channel.send(embed = info)
+
+        elif msglower.startswith('-clan list') or msglower.startswith('-clans'):
+            await message.delete()
+
+            roles = []
+            leaders = []
+            clans = {}
+
+            for r in message.guild.roles:
+                if '[Клан] ' in r.name:
+                    roles.append(r)
+
+            for m in message.guild.members:
+                for r in m.roles:
+                    if r.name == '[Кланы] Leader':
+                        leaders.append(m)
+                        break
+
+            for m in leaders:
+                for r in m.roles:
+                    for e in roles:
+                        if r == e:
+                            clans[m] = e
+
+            clan = ''
+            for a in clans.values():
+                clan += a.mention + '\n'
+
+            lead = ''
+            for b in clans.keys():
+                lead += b.mention + '\n'
+
+                
+            listembed = discord.Embed(
+                description = 'Список кланов сервера {}: '.format(message.guild.name),
+                color = discord.Color.blue()
+            )
+            listembed.add_field(
+                name = 'Кланы: ',
+                value = clan
+            )
+            listembed.add_field(
+                name = 'Лидеры: ',
+                value = lead
+            )
+
+            await message.channel.send(embed = listembed)
+
+        elif msglower.startswith('-clan'):
+            await message.delete()
+            failembed = discord.Embed(
+                description = '***Параметры команды -clan: ***\ncreate [#цвет] [название] - создать клан\ninvite [@member/member_id] - пригласить пользователя в клан\npromote [@member/member_if] - назначить участника клана на должность офицера\ndemote [@member/member_id] - убрать с участника должность офицера клана\nleader [@member/member_id] - назначить участника клана на должность лидера\nkick [@member/member_id] - исключить пользователя из клана\ninfo [название клана] - показывает информацию о клане',
+                color = discord.Color.dark_orange()
+            )
+            await message.channel.send(embed = failembed, delete_after = 60)
+
+
+
+
+
+
+
 
 
 
