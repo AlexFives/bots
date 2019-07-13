@@ -28,10 +28,10 @@ Number: 25; Pokemon: pikachu; Give: 2Spe; Photo: https://pokemongolife.ru/p/Pika
 Number: 26; Pokemon: raichu; Give: 3Spe; Photo: https://pokemongolife.ru/p/Raichu.png;
 Number: 27; Pokemon: sandshrew; Give: 1Def; Photo: https://pokemongolife.ru/p/Sandshrew.png;
 Number: 28; Pokemon: sandslash; Give: 2Def; Photo: https://pokemongolife.ru/p/Sandslash.png;
-Number: 29; Pokemon: nidoran(female); Give: 1HP; Photo: https://pokemongolife.ru/p/Nidoran-female.png;
+Number: 29; Pokemon: nidoran♀; Give: 1HP; Photo: https://pokemongolife.ru/p/Nidoran-female.png;
 Number: 30; Pokemon: nidorina; Give: 2HP; Photo: https://pokemongolife.ru/p/Nidorina.png;
 Number: 31; Pokemon: nidoqueen; Give: 3HP; Photo: https://pokemongolife.ru/p/Nidoqueen.png;
-Number: 32; Pokemon: nidoran(male); Give: 1Atk; Photo: https://pokemongolife.ru/p/Nidoran-male.png;
+Number: 32; Pokemon: nidoran♂; Give: 1Atk; Photo: https://pokemongolife.ru/p/Nidoran-male.png;
 Number: 33; Pokemon: nidorino; Give: 2Atk; Photo: https://pokemongolife.ru/p/Nidorino.png;
 Number: 34; Pokemon: nidoking; Give: 3Atk; Photo: https://pokemongolife.ru/p/Nidoking.png;
 Number: 35; Pokemon: clefairy; Give: 2HP; Photo: https://pokemongolife.ru/p/Clefairy.png;
