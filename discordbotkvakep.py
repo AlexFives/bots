@@ -592,13 +592,13 @@ async def on_message(message):
         await message.delete()
         embed=discord.Embed(title="**Help:**", description="Здесь Вы можете просмотреть список моих команд.", color=0x00ff80)
         embed.add_field(
-            name='***-evs имя_покемона***',
+            name='***-evs [имя_покемона] или [его_номер_в_покедексе]***',
             value='Показывает ЕВс, которые даёт покемон после убийства.',
             inline=True
         )
         embed.add_field(
-            name='***-evs стат***',
-            value='Показывает покемонов, которые дают данный стат после убийства.',
+            name='***-evs [стат]***',
+            value='Показывает покемонов, которые дают данный стат после убийства.\nCписок статов: Хп - hp, Атака - atk, Защита - def, Специальная атака - spa, Специальная защита - spd, Скорость - spe.',
             inline=True
         )
         embed.add_field(
