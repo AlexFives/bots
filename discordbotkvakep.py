@@ -592,7 +592,7 @@ async def on_message(message):
         await message.delete()
         embed=discord.Embed(title="**Help:**", description="Здесь Вы можете просмотреть список моих команд.", color=0x00ff80)
         embed.add_field(
-            name='***-evs [имя_покемона] или [его_номер_в_покедексе]***',
+            name='***-evs [имя покемона на английском]\nили\n-evs [номер покемона в покедексе]***',
             value='Показывает ЕВс, которые даёт покемон после убийства.',
             inline=True
         )
@@ -620,6 +620,11 @@ async def on_message(message):
             name='***-avatar*** или ***-ava***',
             value='Показывает аватарку пользователя.',
             inline=True
+        )
+        embed.add_field(
+            name = '***-calc [выражение]***',
+            value = 'Встроенный калькулятор, подробнее: -calc',
+            inline = True
         )
         embed.set_footer(
             text="made by Alex5555"
@@ -4043,6 +4048,208 @@ async def on_message(message):
             )
             return
         
+#00000     00000  00000000  00000     00000  0000
+#000 00   00 000  0000      000 00   00 000   00
+#000  00 00  000  00000000  000  00 00  000   00
+#000   000   000  0000      000   000   000   00
+#000         000  00000000  000         000  0000
+    if msglower.startswith('-memberinfo') or msglower.startswith('-memi'):
+        await message.delete()
+        msg = message.content.split(' ', 1)
+
+        try:
+            member = msg[1]
+            member = member.replace('<', '')
+            member = member.replace('@', '')
+            member = member.replace('>', '')
+            member = message.guild.get_member(int(member))
+        except IndexError:
+            await message.channel.send('Используйте: -memberinfo [@member/member_id]', delete_after = 15)
+            return
+
+        created = member.created_at.date()
+        year = created.year
+        month = created.month
+        if month == 1:
+            month = 'января'
+        elif month == 2:
+            month = 'февраля'
+        elif month == 3:
+            month = 'марта'
+        elif month == 4:
+            month = 'апреля'
+        elif month == 5:
+            month = 'мая'
+        elif month == 6:
+            month = 'июня'
+        elif month == 7:
+            month = 'июля'
+        elif month == 8:
+            month = 'августа'
+        elif month == 9:
+            month = 'сентября'
+        elif month == 10:
+            month = 'октября'
+        elif month == 11:
+            month = 'ноября'
+        elif month == 12:
+            month = 'декабря'
+        day = created.day
+        created = '{} {} {}'.format(day, month, year)
+
+        joined = member.joined_at.date()
+        year = joined.year
+        month = joined.month
+        if month == 1:
+            month = 'января'
+        elif month == 2:
+            month = 'февраля'
+        elif month == 3:
+            month = 'марта'
+        elif month == 4:
+            month = 'апреля'
+        elif month == 5:
+            month = 'мая'
+        elif month == 6:
+            month = 'июня'
+        elif month == 7:
+            month = 'июля'
+        elif month == 8:
+            month = 'августа'
+        elif month == 9:
+            month = 'сентября'
+        elif month == 10:
+            month = 'октября'
+        elif month == 11:
+            month = 'ноября'
+        elif month == 12:
+            month = 'декабря'
+        day = joined.day
+        joined = '{} {} {}'.format(day, month, year)
+
+        nick = member.nick
+        if nick == None:
+            nick = member.display_name
+
+        try:
+            prem = member.premium_since.date()
+            day = prem.day
+            month = day.month
+            if month == 1:
+                month = 'января'
+            elif month == 2:
+                month = 'февраля'
+            elif month == 3:
+                month = 'марта'
+            elif month == 4:
+                month = 'апреля'
+            elif month == 5:
+                month = 'мая'
+            elif month == 6:
+                month = 'июня'
+            elif month == 7:
+                month = 'июля'
+            elif month == 8:
+                month = 'августа'
+            elif month == 9:
+                month = 'сентября'
+            elif month == 10:
+                month = 'октября'
+            elif month == 11:
+                month = 'ноября'
+            elif month == 12:
+                month = 'декабря'
+            year = prem.year
+            prem = 'Действует с {} {} {}'.format(day, month.year)
+        except AttributeError:
+            prem = 'Не приобретена'
+
+        status = member.status
+        if status == discord.Status.online:
+            status = '{} Онлайн'.format(client.get_emoji(596453205341241355))
+        elif status == discord.Status.idle:
+            status = '{} Не активен'.format(client.get_emoji(596453234227413031))
+        elif status == discord.Status.dnd:
+            status = '{} Не беспокоить'.format(client.get_emoji(596453249712652308))
+        elif status == discord.Status.offline:
+            status = '{} Оффлайн'.format(client.get_emoji(596453263927279729))
+
+        mobile = member.is_on_mobile()
+        if mobile == True:
+            mobile = 'Мобильное приложение'
+        elif mobile == False:
+            mobile = 'Приложение для компьютера'
+
+        toprole = member.top_role.mention
+
+        memid = member.id
+
+        incognito = client.get_emoji(596697306728759296)
+        memi = discord.Embed(
+            description = '{}Информация о пользователе {}'.format(incognito, member.mention),
+            color = member.color
+        )
+        memi.set_thumbnail(
+            url = member.avatar_url
+        )
+        memi.set_footer(
+            text = 'Requested by {}'.format(message.author),
+            icon_url = message.author.avatar_url
+        )
+        memi.add_field(
+            name = 'Имя:',
+            value = member.display_name,
+            inline = True
+        )
+        memi.add_field(
+            name = 'Тэг:',
+            value = member.discriminator,
+            inline = True
+        )
+        memi.add_field(
+            name = 'Зарегистрирован: ',
+            value = created,
+            inline = True
+        )
+        memi.add_field(
+            name = 'Подписка Discord Nitro:',
+            value = prem,
+            inline = True
+        )
+        memi.add_field(
+            name = 'Ник:',
+            value = nick,
+            inline = True
+        )
+        memi.add_field(
+            name = 'Зашёл на сервер:',
+            value = joined,
+            inline = True
+        )
+        memi.add_field(
+            name = 'Статус:',
+            value = status,
+            inline = True
+        )
+        memi.add_field(
+            name = 'Клиент:',
+            value = mobile,
+            inline = True
+        )
+        memi.add_field(
+            name = 'Наивысшая роль:',
+            value = toprole,
+            inline = True
+        )
+        memi.add_field(
+            name = 'ID:',
+            value = memid,
+            inline = True
+        )
+        await message.channel.send(embed = memi)
+
+
+
 
 
 
