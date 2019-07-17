@@ -4134,7 +4134,7 @@ async def on_message(message):
         try:
             prem = member.premium_since.date()
             day = prem.day
-            month = day.month
+            month = prem.month
             if month == 1:
                 month = 'января'
             elif month == 2:
@@ -4160,7 +4160,7 @@ async def on_message(message):
             elif month == 12:
                 month = 'декабря'
             year = prem.year
-            prem = 'Действует с {} {} {}'.format(day, month.year)
+            prem = 'Действует с {} {} {}'.format(day, month, year)
         except AttributeError:
             prem = 'Не приобретена'
 
