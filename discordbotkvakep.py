@@ -1892,8 +1892,13 @@ async def on_message(message):
             webid = web.id
             webtoken = web.token
         except:
-            await message.channel.send('Вебхуки не найдены!', delete_after = 15)
-            return
+            try:
+                web = await message.channel.create_webhook(name = 'kvakep', avatar = message.guild.me.avatar_url)
+                webid = web.id
+                webtoken = web.token
+            except:
+                await message.channel.send('Невозможно создать вебхук!', delete_after = 15)
+                return
         try:
             author = msg[1].replace('<', '')
             author = author.replace('>', '')
@@ -2796,7 +2801,6 @@ async def on_message(message):
 #000       000       00000000  000  00  000  0000000
 #000    0  0000      00    00  000   00 000      000
 # 000000   00000000  00    00  000    00000  0000000
-
     if msglower.startswith('-clan'):
 
         if msglower.startswith('-clan create'):
@@ -3906,12 +3910,139 @@ async def on_message(message):
             )
             await message.channel.send(embed = failembed, delete_after = 60)
 
+# 000000     000000  000        000000
+#000    0   00   00  000       000    0
+#000       00000000  000       000
+#000    0  00    00  0000      000    0
+# 000000   00    00  00000000   000000
+    if msglower.startswith('-calc'):
+        await message.delete()
 
+        webhooks = await message.channel.webhooks()
+        try:
+            web = webhooks[0]
+            webid = web.id
+            webtoken = web.token
+        except discord.errors.Forbidden:
+            await message.channel.send('Недостаточно прав!', delete_after = 15)
+            return
+        except:
+            try:
+                await message.channel.create_webhook(name = 'kvakep', avatar = message.guild.me.avatar_url)
+                webhooks = await message.channel.webhooks()
+                web = webhooks[0]
+                webid = web.id
+                webtoken = web.token
+            except Exception as e:
+                print(e)
+                await message.channel.send('Недостаточно прав!', delete_after = 15)
+                return
 
+        wh = discord.Webhook.partial(
+            id = webid,
+            token = webtoken,
+            adapter = discord.RequestsWebhookAdapter()
+        )
 
+        try:
+            calc = message.content.split(' ', 1)[1]
+        except IndexError:
+            fail = discord.Embed(
+                title = 'Используйте: -calc [выражение]',
+                description = '***Список доступных функций: ***\n+ - сложение чисел\n- - вычитание чисел\n* - умножение чисел\n/ - деление чисел\nx^y - возведение числа x в степень y\nsqrt(x) - вычисление квадратного корня из числа\nsin(x) - вычисление синуса числа\ncos(x) - вычисление косинуса числа\ntg(x) - вычисление тангенса числа\nlog2(x) - вычисление логарифма числа по основанию 2\nlog10(x) - вычисление логарифма числа по основанию 10\n! - факториал числа\ne - экспонента\npi - число пи',
+                color = discord.Color.dark_teal()
+            )
+            wh.send(
+                embed = fail,
+                username = 'Funny Calculator',
+                avatar_url = 'https://i.imgur.com/y36oYtu.png'
+            )
+            return
 
+        calc = calc.replace('sqrt', 'math.sqrt')
+        calc = calc.replace('^', '**')
+        calc = calc.replace('cos', 'math.cos')
+        calc = calc.replace('sin', 'math.sin')
+        calc = calc.replace('tg', 'math.tan')
+        calc = calc.replace('log2', 'math.log2')
+        calc = calc.replace('log10', 'math.log10')
+        calc = calc.replace('pi', 'math.pi')
+        calc = calc.replace('e', 'math.e')
 
+        try:
+            while True:
+                number = re.search(r'\d*!', calc)
+                exp = re.search(r'(.*)!', calc)
+                if number:
+                    num = number.replace('!', '')
+                    num = eval(num)
+                    calc = calc.replace(number, 'math.factorial({})'.format(num))
+                elif exp:
+                    num = exp.replace('!', '')
+                    num = eval(num)
+                    calc = calc.replace(number, 'math.factorial({})'.format(num))
+                else:
+                    break
+        except:
+            pass
 
+        try:
+            result = eval(calc)
+            if math.isfinite(result):
+                wh.send(
+                    content = str(message.content.split(' ', 1)[1]) + ' = ' + str(result),
+                    username = 'Funny Calculator',
+                    avatar_url = 'https://i.imgur.com/y36oYtu.png'
+                )
+            else:
+                wh.send(
+                    content = 'Не скажу!',
+                    username = 'Funny Calculator',
+                    avatar_url = 'https://i.imgur.com/y36oYtu.png'
+                )
+        except ZeroDivisionError:
+            wh.send(
+                content = 'Я ещё не научился делить на 0 :(',
+                username = 'Funny Calculator',
+                avatar_url = 'https://i.imgur.com/y36oYtu.png'
+            )
+            return
+        except SyntaxError:
+            wh.send(
+                content = 'Не могу такое :(',
+                username = 'Funny Calculator',
+                avatar_url = 'https://i.imgur.com/y36oYtu.png'
+            )
+            return
+        except discord.errors.HTTPException:
+            wh.send(
+                content = 'Слишком много!',
+                username = 'Funny Calculator',
+                avatar_url = 'https://i.imgur.com/y36oYtu.png'   
+            )
+            return
+        except ValueError:
+            wh.send(
+                content = 'Ошибка!',
+                username = 'Funny Calculator',
+                avatar_url = 'https://i.imgur.com/y36oYtu.png' 
+            )
+            return
+        except TypeError:
+            wh.send(
+                content = 'Не могу такое :(',
+                username = 'Funny Calculator',
+                avatar_url = 'https://i.imgur.com/y36oYtu.png'
+            )
+            return
+        except AttributeError:
+            wh.send(
+                content = 'Не могу такое :(',
+                username = 'Funny Calculator',
+                avatar_url = 'https://i.imgur.com/y36oYtu.png'
+            )
+            return
+        
 
 
 
