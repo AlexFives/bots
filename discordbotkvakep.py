@@ -4198,7 +4198,7 @@ async def on_message(message):
         )
         memi.add_field(
             name = 'Имя:',
-            value = member.display_name,
+            value = member.name,
             inline = True
         )
         memi.add_field(
