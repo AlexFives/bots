@@ -3938,8 +3938,7 @@ async def on_message(message):
                 web = webhooks[0]
                 webid = web.id
                 webtoken = web.token
-            except Exception as e:
-                print(e)
+            except:
                 await message.channel.send('Недостаточно прав!', delete_after = 15)
                 return
 
@@ -3976,19 +3975,12 @@ async def on_message(message):
 
         try:
             while True:
-                number = re.search(r'\d*!', calc)
-                exp = re.search(r'(.*)!', calc)
-                if number:
-                    num = number.replace('!', '')
-                    num = eval(num)
-                    calc = calc.replace(number, 'math.factorial({})'.format(num))
-                elif exp:
-                    num = exp.replace('!', '')
-                    num = eval(num)
-                    calc = calc.replace(number, 'math.factorial({})'.format(num))
-                else:
-                    break
-        except:
+                factorial = re.search(r'\d*!', calc)
+                factorial = factorial.group(0)
+                num = factorial.replace('!', '')
+                num = eval(num)
+                calc = calc.replace(factorial, 'math.factorial({})'.format(num))
+        except AttributeError:
             pass
 
         try:
@@ -4131,38 +4123,11 @@ async def on_message(message):
         if nick == None:
             nick = member.display_name
 
-        try:
-            prem = member.premium_since.date()
-            day = prem.day
-            month = prem.month
-            if month == 1:
-                month = 'января'
-            elif month == 2:
-                month = 'февраля'
-            elif month == 3:
-                month = 'марта'
-            elif month == 4:
-                month = 'апреля'
-            elif month == 5:
-                month = 'мая'
-            elif month == 6:
-                month = 'июня'
-            elif month == 7:
-                month = 'июля'
-            elif month == 8:
-                month = 'августа'
-            elif month == 9:
-                month = 'сентября'
-            elif month == 10:
-                month = 'октября'
-            elif month == 11:
-                month = 'ноября'
-            elif month == 12:
-                month = 'декабря'
-            year = prem.year
-            prem = 'Действует с {} {} {}'.format(day, month, year)
-        except AttributeError:
-            prem = 'Не приобретена'
+        bot = member.bot
+        if bot == True:
+            bot = '{} Да'.format(client.get_emoji(596680939401117707))
+        else:
+            bot = '{} Нет'.format(client.get_emoji(601059397447450624))
 
         status = member.status
         if status == discord.Status.online:
@@ -4212,8 +4177,8 @@ async def on_message(message):
             inline = True
         )
         memi.add_field(
-            name = 'Подписка Discord Nitro:',
-            value = prem,
+            name = 'Бот:',
+            value = bot,
             inline = True
         )
         memi.add_field(
