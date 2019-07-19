@@ -1444,93 +1444,96 @@ async def on_message(message):
 #00000000  000   00  000   00      0000000    00000000  00000000  000
 #00    00  000   00  000   00      000   00   0000      00    00  000    0
 #00    00  0000000   0000000       000    00  00000000  00    00   000000
-    if msglower.startswith('-addreac') and message.author.id == 400231667408699392:
-        await message.delete()
-        msg = message.content.split(' ')
-        
-        msghistory = await message.channel.history(limit = 100).flatten()
-        try:
-            for m in msghistory:
-                if int(msg[1]) == m.id:
-                    mes = m
-                    break
-            else:
-                await message.channel.send('Сообщение не найдено!', delete_after = 15)
-        
-        except IndexError:
-            await message.channel.send('Используйте: -addreac [message_id] [reaction]', delete_after = 15)
-            return
-        
-        myemojis = client.emojis
-        try:
-            for e in myemojis:
-                if e.name in msg[2]:
-                    emoji = e
-                    await mes.add_reaction(emoji)
-                    break
-            else:
-                try:
-                    await mes.add_reaction(msg[2])
-                except:
-                    await message.channel.send('Эмодзи не найдено!', delete_after = 15)
-        except IndexError:
-            await message.channel.send('Используйте: -addreac [message_id] [reaction]', delete_after = 15)
-            return
+    if msglower.startswith('-addreac'):
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
+            await message.delete()
+            msg = message.content.split(' ')
+            
+            msghistory = await message.channel.history(limit = 100).flatten()
+            try:
+                for m in msghistory:
+                    if int(msg[1]) == m.id:
+                        mes = m
+                        break
+                else:
+                    await message.channel.send('Сообщение не найдено!', delete_after = 15)
+            
+            except IndexError:
+                await message.channel.send('Используйте: -addreac [message_id] [reaction]', delete_after = 15)
+                return
+            
+            myemojis = client.emojis
+            try:
+                for e in myemojis:
+                    if e.name in msg[2]:
+                        emoji = e
+                        await mes.add_reaction(emoji)
+                        break
+                else:
+                    try:
+                        await mes.add_reaction(msg[2])
+                    except:
+                        await message.channel.send('Эмодзи не найдено!', delete_after = 15)
+            except IndexError:
+                await message.channel.send('Используйте: -addreac [message_id] [reaction]', delete_after = 15)
+                return
 
-    if msglower.startswith('-removereac') and message.author.id == 400231667408699392:
-        await message.delete()
-        msg = message.content.split(' ')
-        
-        msghistory = await message.channel.history(limit = 100).flatten()
-        try:
-            for m in msghistory:
-                if int(msg[1]) == m.id:
-                    mes = m
-                    break
-            else:
-                await message.channel.send('Сообщение не найдено!', delete_after = 15)
-        
-        except IndexError:
-            await message.channel.send('Используйте: -removereac [message_id] [reaction]', delete_after = 15)
-            return
-        
-        myemojis = client.emojis
-        try:
-            for e in myemojis:
-                if e.name in msg[2]:
-                    emoji = e
-                    await mes.remove_reaction(emoji, message.guild.me)
-                    break
-            else:
-                try:
-                    await mes.remove_reaction(msg[2], message.guild.me)
-                except:
-                    await message.channel.send('Эмодзи не найдено!', delete_after = 15)
-        except IndexError:
-            await message.channel.send('Используйте: -removereac [message_id] [reaction]', delete_after = 15)
-            return
+    if msglower.startswith('-removereac'):
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
+            await message.delete()
+            msg = message.content.split(' ')
+            
+            msghistory = await message.channel.history(limit = 100).flatten()
+            try:
+                for m in msghistory:
+                    if int(msg[1]) == m.id:
+                        mes = m
+                        break
+                else:
+                    await message.channel.send('Сообщение не найдено!', delete_after = 15)
+            
+            except IndexError:
+                await message.channel.send('Используйте: -removereac [message_id] [reaction]', delete_after = 15)
+                return
+            
+            myemojis = client.emojis
+            try:
+                for e in myemojis:
+                    if e.name in msg[2]:
+                        emoji = e
+                        await mes.remove_reaction(emoji, message.guild.me)
+                        break
+                else:
+                    try:
+                        await mes.remove_reaction(msg[2], message.guild.me)
+                    except:
+                        await message.channel.send('Эмодзи не найдено!', delete_after = 15)
+            except IndexError:
+                await message.channel.send('Используйте: -removereac [message_id] [reaction]', delete_after = 15)
+                return
 
 #0000000   00000000  000           0000000    00000000    000000   000000
 #000   00  0000      000           000   00   0000       00   00  000    0
 #000   00  00000000  000           0000000    00000000  00000000  000
 #000   00  0000      0000          000   00   0000      00    00  000    0
 #0000000   00000000  00000000      000    00  00000000  00    00   000000
-    if msglower.startswith('-delreacts') and message.author.id == 400231667408699392:
-        await message.delete()
-        msg = message.content.split(' ')
-        
-        msghistory = message.channel.history(limit = 100).flatten()
-        try:
-            for m in msghistory:
-                if int(msg[1]) == m.id:
-                    msg = m
-                    await msg.clear_reactions()
-                    break
-            else:
-                await message.channel.send('Сообщение не найдено!', delete_after = 15)
-        except IndexError:
-            await message.channel.send('Используйте: -delreacts [message_id]', delete_after = 15)
-            return
+    if msglower.startswith('-delreacts'):
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
+            await message.delete()
+            msg = message.content.split(' ')
+            
+            msghistory = message.channel.history(limit = 100).flatten()
+            try:
+                for m in msghistory:
+                    if int(msg[1]) == m.id:
+                        msg = m
+                        await msg.clear_reactions()
+                        break
+                else:
+                    await message.channel.send('Сообщение не найдено!', delete_after = 15)
+            except IndexError:
+                await message.channel.send('Используйте: -delreacts [message_id]', delete_after = 15)
+                return
 
 #0000000    00000000  0000000  00000000  00000    000  0000000
 #000   00   0000      000      0000      000 00   000  000   00
