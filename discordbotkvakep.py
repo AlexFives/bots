@@ -1662,69 +1662,70 @@ async def on_message(message):
 #000 000 000 000   000000      00000000  000 000 000 000  000   000
 #000   000   000       00      0000      000   000   000  000   000
 #000         000   00000       00000000  000         000   0000000
-    if msglower.startswith('-myemo') and message.author.id == 400231667408699392:
-        content = message.content.split(' ', 1)
-        await message.delete()
-        emojinames = []
-        emojipics = []
-        emojis = client.emojis
-        emojilist = []
-        global myemojismsg, embedlist, emojiindex
-        myemojismsg = discord.Message
-        embedlist = []
-        emojiindex = 0
-        name = ''
-        msg = ''
-        for i in range(len(emojis)):
-            name = str(emojis[i]).split(':', 2)
-            name = name[1]
-            name = name.replace('*', '\*')
-            name = name.replace('`', '\`')
-            name = name.replace('_', '\_')
-            name = name.replace('~', '\~')
-            name = name.replace('|', '\|')
-            name = name.replace('<', '\<')
-            name = name.replace('>', '\>')
-            emojinames.append(name)
-            emojipics.append(emojis[i])
-        for e in range(len(emojinames)):
-            msg += '{} - {}\n'.format(emojinames[e], emojipics[e])
-            if e % 20 == 0 and e != 0:
+    if msglower.startswith('-myemo'):
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
+            content = message.content.split(' ', 1)
+            await message.delete()
+            emojinames = []
+            emojipics = []
+            emojis = client.emojis
+            emojilist = []
+            global myemojismsg, embedlist, emojiindex
+            myemojismsg = discord.Message
+            embedlist = []
+            emojiindex = 0
+            name = ''
+            msg = ''
+            for i in range(len(emojis)):
+                name = str(emojis[i]).split(':', 2)
+                name = name[1]
+                name = name.replace('*', '\*')
+                name = name.replace('`', '\`')
+                name = name.replace('_', '\_')
+                name = name.replace('~', '\~')
+                name = name.replace('|', '\|')
+                name = name.replace('<', '\<')
+                name = name.replace('>', '\>')
+                emojinames.append(name)
+                emojipics.append(emojis[i])
+            for e in range(len(emojinames)):
+                msg += '{} - {}\n'.format(emojinames[e], emojipics[e])
+                if e % 20 == 0 and e != 0:
+                    emojilist.append(msg)
+                    msg = ''
+                    continue
+            if msg == '':
+                pass
+            else:   
                 emojilist.append(msg)
-                msg = ''
-                continue
-        if msg == '':
-            pass
-        else:   
-            emojilist.append(msg)
-        for i in range(len(emojilist)):
-            emojiembed = discord.Embed(
-                name = 'Мои эмодзи: ',
-                description = emojilist[i],
-                color = 0x704b60
-            )
-            emojiembed.set_author(
-                name = 'Страница #{}'.format(i+1),
-                icon_url = 'https://i.imgur.com/EuR39pj.gif'
-            )
-            emojiembed.set_footer(
-                text = 'Всего {} эмодзи'.format(len(emojis)),
-                icon_url = client.user.avatar_url
-            )
-            embedlist.append(emojiembed)
-        if len(content) == 2:
-            if 'all' in content[1]:
-                for i in range(len(embedlist)):
-                    await message.author.send(embed = embedlist[i])
-            elif 'count' in content[1]:
-                count = len(client.emojis)
-                await message.channel.send('У меня имеется {} эмодзи!'.format(count), delete_after = 20)
+            for i in range(len(emojilist)):
+                emojiembed = discord.Embed(
+                    name = 'Мои эмодзи: ',
+                    description = emojilist[i],
+                    color = 0x704b60
+                )
+                emojiembed.set_author(
+                    name = 'Страница #{}'.format(i+1),
+                    icon_url = 'https://i.imgur.com/EuR39pj.gif'
+                )
+                emojiembed.set_footer(
+                    text = 'Всего {} эмодзи'.format(len(emojis)),
+                    icon_url = client.user.avatar_url
+                )
+                embedlist.append(emojiembed)
+            if len(content) == 2:
+                if 'all' in content[1]:
+                    for i in range(len(embedlist)):
+                        await message.author.send(embed = embedlist[i])
+                elif 'count' in content[1]:
+                    count = len(client.emojis)
+                    await message.channel.send('У меня имеется {} эмодзи!'.format(count), delete_after = 20)
+                else:
+                    await message.channel.send('Используйте: -myemo ([all/count])', delete_after = 15)
             else:
-                await message.channel.send('Используйте: -myemo ([all/count])', delete_after = 15)
-        else:
-            myemojismsg = await message.channel.send(embed = embedlist[0])
-            await myemojismsg.add_reaction('◀')
-            await myemojismsg.add_reaction('▶')
+                myemojismsg = await message.channel.send(embed = embedlist[0])
+                await myemojismsg.add_reaction('◀')
+                await myemojismsg.add_reaction('▶')
 
 # 0000000000  0000  00    00  00000000      0000000     0000000   000       00000000
 #00        0   00   00    00  0000          000   00   000   000  000       0000
