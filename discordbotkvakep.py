@@ -12,6 +12,10 @@ import colormap
 
 botstream = discord.Streaming(name = 'Say: -help', url = 'https://www.twitch.tv/alexfives')
 
+blocks = {}
+
+botcommands = ['help', 'lovelist', 'll', 'flip', 'evs', 'topfact', 'tf', 'say', 'whisper', 'ava', 'kick', 'purge', 'clear', 'roles', 'guilds', 'groles', 'serverinfo', 'addreac', 'removereac', 'delreacts', 'resend', 'myemo', 'giverole', 'delrole', 'perms', 'writeas', 'ping', 'mute', 'ban', 'unmute', 'unban', 'clan', 'calc', 'memberinfo', 'memi', 'block']
+
 topfact1 = 'Всегда ищите Starmie с природой Adamant. Это  лучшее, что может быть для него.:thumbsup:'
 topfact2 = 'Против фей очень эффективно ставить драконов, так как фея, тип атаки которой схож с её типом (STAB-эффект), ничего не сделает Вашему покемону, а вот дракон наоборот нанесёт двойной урон.:ok_hand:'
 topfact3 = 'Всегда пытайтесь найти Staraptor\'a с природой Modest. Ничего не может быть лучше!:thumbsup:'
@@ -583,6 +587,26 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    try:
+        block = blocks[message.guild.id]
+        tc = block['tc']
+        cmds = block['cmds']
+        
+        if not message.author.guild_permissions.administrator or not message.author.id == 400231667408699392:
+
+            if str(message.channel.id) in tc:
+                return
+        
+            if msglower.split(' ', 1)[0].replace('-', '') in cmds:
+                return
+
+    except KeyError:
+        pass
+
+
+        
+    
+
 #000   000  00000000  000       000000
 #000   000  0000      000       000  00
 #000000000  00000000  000       000000
@@ -927,7 +951,6 @@ async def on_message(message):
                 await message.channel.send(embed = pokeinfo)
             except:
                 print(Exception)
-
 
 #0000000000  0000000000
 #0   00   0  000
@@ -4217,9 +4240,126 @@ async def on_message(message):
         )
         await message.channel.send(embed = memi)
 
+#000000   000        0000000    000000   000   000  0000000
+#000  00  000       000   000  000    0  000  000   000
+#000000   000       000   000  000       0000000    0000000
+#000  00  0000      000   000  000    0  000  000       000
+#000000   00000000   0000000    000000   000   000  0000000
+    if msglower.startswith('-block'):
 
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
 
+            await message.delete()
 
+            msg = message.content.split(' ')
+
+            try:
+                block = blocks[message.guild.id]
+                tc = block['tc']
+                cmds = block['cmds']
+            except KeyError:
+                blocks[message.guild.id] = {'tc':[], 'cmds':[]}
+                block = blocks[message.guild.id]
+                tc = block['tc']
+                cmds = block['cmds']
+
+            try:
+                if msg[1] == 'tc':
+                    for t in message.guild.text_channels:
+                        try:
+                            if t.id == int(msg[3]):
+                                break
+                        except IndexError:
+                            await message.channel.send('Используйте: -block tc [add/remove] [textchannel_id]', delete_after = 15)
+                            return
+                        except ValueError:
+                            await message.channel.send('Канал не найден!', delete_after = 15)
+                            return
+                    else:
+                        await message.channel.send('Канал не найден!', delete_after = 15)
+                        return
+                    if msg[2] == 'add':
+                        tc.append(msg[3])
+                    elif msg[2] == 'remove':
+                        tc.pop(msg[3])
+                    blocks[message.guild.id] = {'tc':tc, 'cmds':cmds}
+                    await message.channel.send('Канал успешно добавлен в список игнорирования! :white_check_mark:', delete_after = 15)
+                
+                if msg[1] == 'cmd':
+                    msg[3] = msg[3].replace('-', '')
+                    try:
+                        if msg[3].lower() in botcommands:
+                            pass
+                        else:
+                            await message.channel.send('Неизвестная команда!', delete_after = 15)
+                            return
+                    except IndexError:
+                        await message.channel.send('Используйте: -block cmd [add/remove] [bot_command]', delete_after = 15)
+                        return
+                    for c in cmds:
+                        if c.lower() == msg[3].lower():
+                            await message.channel.send('Команда уже добавлена в список игнорирования!', delete_after = 15)
+                            return
+                    if msg[2] == 'add':
+                        cmds.append(msg[3])
+                    elif msg[2] == 'remove':
+                        cmds.pop(msg[3])
+                    blocks[message.guild.id] = {'tc':tc, 'cmds':cmds}
+                    await message.channel.send('Команда больше недоступна на этом сервере!', delete_after = 15)
+                
+                if msg[1] == 'info':
+                    cm = ''
+                    textc = ''
+                    for c in cmds:
+                        cm += c + '\n'
+                    for t in tc:
+                        textc += message.guild.get_channel(int(t)).mention + '\n'
+                    if cm == '':
+                        cm = 'Отсутствуют'
+                    if textc == '':
+                        textc = ' Отсутствуют'
+                    blockemb = discord.Embed(
+                        description = '🚫***Запреты для бота на сервере:*** ',
+                        color = discord.Color.dark_blue()
+                    )
+                    blockemb.add_field(
+                        name = 'Нечитаемые каналы: ',
+                        value = textc
+                    )
+                    blockemb.add_field(
+                        name = 'Заблокированные команды: ',
+                        value = cm
+                    )
+                    await message.channel.send(embed = blockemb)
+                
+                if msg[1] == 'clear':
+                    try:
+                        if msg[2] == 'tc':
+                            tc = []
+                            blocks[message.guild.id] = {'tc':tc, 'cmd':cmd}
+                        elif msg[2] == 'cmd':
+                            cmd = []
+                            blocks[message.guild.id] = {'tc':tc, 'cmd':cmd}
+                        elif msg[2] == 'all':
+                            block.pop(message.guild.id)
+                        else:
+                            await message.channel.send('Используйте: -block clear [tc/cmd/all]', delete_after = 15)
+                            return
+                    except IndexError:
+                        await message.channel.send('Используйте: -block clear [tc/cmd/all]', delete_after = 15)
+                        return
+            except IndexError:
+                blockhelp = discord.Embed(
+                    title = 'Информация о команде -block: ',
+                    description = '**-block info** - показывает информацию о запретах для бота на сервере\n**-block tc [add/remove] [textchannel_id]** - добавляет/удаляет текстовый канал из списка нечитаемых каналов\n**-block cmd [add/remove] [bot_command]** - добавляет/удаляет команду бота из списка игнорирования\n**-block clear [cmd/tc/all]** - очищает список игнорирования',
+                    color = discord.Color.dark_blue()
+                )
+                return
+
+    if msglower.startswith('-getblock') and message.author.id == 400231667408699392:
+        await message.delete()
+        for k in blocks.keys():
+            await message.author.send(content = '{}   -   {}'.format(k, blocks[k]))
 
 
 """
