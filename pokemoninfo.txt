@@ -62,7 +62,7 @@ Number: 59; Pokemon: arcanine; Give: 2Atk; Photo: https://pokemongolife.ru/p/Arc
 Number: 60; Pokemon: poliwag; Give: 1Spe; Photo: https://pokemongolife.ru/p/Poliwag.png;
 Number: 61; Pokemon: poliwhirl; Give: 2Spe; Photo: https://pokemongolife.ru/p/Poliwhirl.png;
 Number: 62; Pokemon: poliwrath; Give: 3Def; Photo: https://pokemongolife.ru/p/Poliwrath.png;
-Number: 63; Pokemon: abra; Give: 1SpD; Photo: https://pokemongolife.ru/p/Abra.png;
+Number: 63; Pokemon: abra; Give: 1SpA; Photo: https://pokemongolife.ru/p/Abra.png;
 Number: 64; Pokemon: kadabra; Give: 2SpD; Photo: https://pokemongolife.ru/p/Kadabra.png;
 Number: 65; Pokemon: alakazam; Give: 3SpD; Photo: https://pokemongolife.ru/p/Alakazam.png;
 Number: 66; Pokemon: machop; Give: 1Atk; Photo: https://pokemongolife.ru/p/Machop.png;
@@ -815,6 +815,6 @@ EVs:
 Stat: hp; Pokemons: Nidoran(Female), Slowpoke, Grimer, Vaporeon, Marill, Phanpy;
 Stat: atk; Pokemons: Ekans, Nidoran(Male), Machop, Krabby, Kingler, Goldeen, Seaking, Larvitar, Poochyena, Trapinch, Corphish, Crawdaunt, Shinx, Sandile, Pawniard, Bisharp;
 Stat: def; Pokemons: Sandshrew, Geodude, Shellder, Onix, Cubone, Marowak, Magcargo, Pelipper, Bronzor, Skorupi, Sewaddle, Swadloon, Venipede, Klink, Klang;
-Stat: spa; Pokemons: Oddish, Psyduck, Golduck, Abra, Gastly, Slugma, Glaceon;
+Stat: spa; Pokemons: Oddish, Psyduck, Golduck, Abra, Gastly, Slugma, Glaceon, Mandibuzz;
 Stat: spd; Pokemons: Tentacool, Tentacruel, Seel, Mantine, Duskull, Dewpider;
 Stat: spe; Pokemons: Rattata, Raticate, Pikachu, Zubat, Golbat, Diglett, Meowth, Poliwag, Poliwhirl, Ponyta, Staryu, Magikarp, Electrike, Pachirisu, Blitzle, Woobat, Swoobat, Froakie, Frogadier, Helioptile, Salandit, Salazzle;
