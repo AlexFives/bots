@@ -6,7 +6,6 @@ import time
 import datetime
 import os
 import math
-import colormap
 
 
 
