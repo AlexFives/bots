@@ -40,7 +40,7 @@ async def on_message(message):
 
     if msg.startswith(pref+'say'):
 
-        if message.author.guild_permissions.administrator or message.author.id = 400231667408699392:
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
             if 'Embed' in msg:
                 msg = msg[5:]
 
