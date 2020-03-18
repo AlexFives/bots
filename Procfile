@@ -1,1 +1,1 @@
-worker: python3 discordbotkvakep.py
+worker: python3 mg.py
