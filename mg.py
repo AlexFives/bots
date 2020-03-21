@@ -2,6 +2,7 @@ import discord
 import random
 import re
 import requests
+import asyncio
 
 botstream = discord.Streaming(name = 'Плевок: *spit @user', url = 'https://www.twitch.tv/alexfives')
 
@@ -19,10 +20,13 @@ async def on_ready():
 @client.event
 async def on_message(message):
 
-    msg = message.content
+    if message.author == client.user:
+        return
+
+    msglower = message.content.lower()
     ments = message.mentions
 
-    if msg.startswith(pref + 'spit'):
+    if msglower.startswith(pref + 'spit'):
 
         await message.delete()
 
@@ -38,60 +42,226 @@ async def on_message(message):
         
         await message.channel.send(embed = emb)
 
-    if msg.startswith(pref+'say'):
 
-        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
-            if 'Embed' in msg:
-                msg = msg[5:]
 
-                try:
-                    say = eval(msg)
-                    await message.channel.send(embed = say)
-                except Exception:
-                    print(Exception)
-
-                    await message.channel.send('Используйте:\n!say discord.Embed(title = \'[text]\', description = \'[text]\', color = \'[hex]\')\n.set_image(url = \'[http(s)://(image)]\')\n.set_thumbnail(url = \'[http(s)://(image)]\')\n.set_footer(text = \'[text]\', icon_url = \'[http(s)://(image)]\')\n.set_author(name = \'[text]\', url = \'[http(s)://]\', icon_url = \'[http(s)://(image)]\')\n.add_field`можно писать несколько раз`(name = \'[text]\', value = \'[text]\', inline = [True/False])')
-
-    if msg.startswith(pref+'writeas'):
-        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
-            msg = message.content.split(' ', 2)
+    if msglower.startswith(pref+'purge') or msglower.startswith(pref+'clear'):
+        if message.author.guild_permissions.manage_messages or message.author.id == 400231667408699392:
+            param = message.content.split(' ', 2)
+            quantity = int(param[1])
             await message.delete()
-            webhooks = await message.channel.webhooks()
+            if quantity <= 100:
+                if len(param) < 2:
+                    await message.channel.send('Искользуйте: *purge [количество сообщений(не более 100)]', delete_after = 15)
+                else:
+                    trash = discord.Embed(
+                        description = 'Выполняется очистка...',
+                        color = 0x246f58
+                    )
+                    trash.set_image(url = 'https://i.imgur.com/mMrEVUW.gif')
+                    purge = discord.Embed(
+                        description = ':white_check_mark: Успешно удалено последних сообщений: **{}**'.format(quantity),
+                        color = 0x246f58
+                    )
+                    purge.set_thumbnail(url = 'https://i.imgur.com/pm0FS6X.png')
+                    await message.channel.send(embed = trash, delete_after = 2)
+                    await asyncio.sleep(3)
+                    await message.channel.purge(limit = quantity)
+                    await message.channel.send(embed = purge, delete_after = 15)   
+            else:
+                await message.delete()
+                await message.channel.send('Количество сообщений превышает 100!', delete_after = 15)
+        else:
+            await message.delete()
+            await message.channel.send('У вас недостаточно прав на выполнение данной команды!', delete_after = 15)
+
+    if msglower.startswith(pref+'addreac'):
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
+            await message.delete()
+            msg = message.content.split(' ')
+            
+            msghistory = await message.channel.history(limit = 100).flatten()
             try:
-                web = webhooks[0]
-                webid = web.id
-                webtoken = web.token
-            except:
-                try:
-                    web = await message.channel.create_webhook(name = 'tulen', avatar = message.guild.me.avatar_url)
-                    webid = web.id
-                    webtoken = web.token
-                except:
-                    await message.channel.send('Невозможно создать вебхук!', delete_after = 15)
-                    return
-            try:
-                author = msg[1].replace('<', '')
-                author = author.replace('>', '')
-                author = author.replace('@', '')
-                author = message.guild.get_member(int(author))
-            except:
-                await message.channel.send('Используйте: -writeas [author] [message]', delete_after = 15)
+                for m in msghistory:
+                    if int(msg[1]) == m.id:
+                        mes = m
+                        break
+                else:
+                    await message.channel.send('Сообщение не найдено!', delete_after = 15)
+            
+            except IndexError:
+                await message.channel.send('Используйте: *addreac [message_id] [reaction]', delete_after = 15)
                 return
-            webhook = discord.Webhook.partial(
-                id = webid,
-                token = webtoken,
-                adapter = discord.RequestsWebhookAdapter()
-            )
+            
+            myemojis = client.emojis
             try:
-                content = msg[2]
-            except:
-                await message.channel.send('Используйте: -writeas [author] [message]', delete_after = 15)
+                for e in myemojis:
+                    if e.name in msg[2]:
+                        emoji = e
+                        await mes.add_reaction(emoji)
+                        break
+                else:
+                    try:
+                        await mes.add_reaction(msg[2])
+                    except:
+                        await message.channel.send('Эмодзи не найдено!', delete_after = 15)
+            except IndexError:
+                await message.channel.send('Используйте: *addreac [message_id] [reaction]', delete_after = 15)
                 return
-            webhook.send(
-                content = content,
-                username = author.display_name,
-                avatar_url = author.avatar_url,
-            )
+
+    if msglower.startswith(pref+'removereac'):
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
+            await message.delete()
+            msg = message.content.split(' ')
+            
+            msghistory = await message.channel.history(limit = 100).flatten()
+            try:
+                for m in msghistory:
+                    if int(msg[1]) == m.id:
+                        mes = m
+                        break
+                else:
+                    await message.channel.send('Сообщение не найдено!', delete_after = 15)
+            
+            except IndexError:
+                await message.channel.send('Используйте: *removereac [message_id] [reaction]', delete_after = 15)
+                return
+            
+            myemojis = client.emojis
+            try:
+                for e in myemojis:
+                    if e.name in msg[2]:
+                        emoji = e
+                        await mes.remove_reaction(emoji, message.guild.me)
+                        break
+                else:
+                    try:
+                        await mes.remove_reaction(msg[2], message.guild.me)
+                    except:
+                        await message.channel.send('Эмодзи не найдено!', delete_after = 15)
+            except IndexError:
+                await message.channel.send('Используйте: *removereac [message_id] [reaction]', delete_after = 15)
+                return
+
+    if msglower.startswith(pref+'delreacts'):
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
+            await message.delete()
+            msg = message.content.split(' ')
+            
+            msghistory = message.channel.history(limit = 100).flatten()
+            try:
+                for m in msghistory:
+                    if int(msg[1]) == m.id:
+                        msg = m
+                        await msg.clear_reactions()
+                        break
+                else:
+                    await message.channel.send('Сообщение не найдено!', delete_after = 15)
+            except IndexError:
+                await message.channel.send('Используйте: *delreacts [message_id]', delete_after = 15)
+                return
+
+    if msglower.startswith(pref+'myemo'):
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
+            content = message.content.split(' ', 1)
+            await message.delete()
+            emojinames = []
+            emojipics = []
+            emojis = client.emojis
+            emojilist = []
+            global myemojismsg, embedlist, emojiindex
+            myemojismsg = discord.Message
+            embedlist = []
+            emojiindex = 0
+            name = ''
+            msg = ''
+            for i in range(len(emojis)):
+                name = str(emojis[i]).split(':', 2)
+                name = name[1]
+                name = name.replace('*', '\*')
+                name = name.replace('`', '\`')
+                name = name.replace('_', '\_')
+                name = name.replace('~', '\~')
+                name = name.replace('|', '\|')
+                name = name.replace('<', '\<')
+                name = name.replace('>', '\>')
+                emojinames.append(name)
+                emojipics.append(emojis[i])
+            for e in range(len(emojinames)):
+                msg += '{} - {}\n'.format(emojinames[e], emojipics[e])
+                if e % 20 == 0 and e != 0:
+                    emojilist.append(msg)
+                    msg = ''
+                    continue
+            if msg == '':
+                pass
+            else:   
+                emojilist.append(msg)
+            for i in range(len(emojilist)):
+                emojiembed = discord.Embed(
+                    name = 'Мои эмодзи: ',
+                    description = emojilist[i],
+                    color = 0x704b60
+                )
+                emojiembed.set_author(
+                    name = 'Страница #{}'.format(i+1),
+                    icon_url = 'https://i.imgur.com/EuR39pj.gif'
+                )
+                emojiembed.set_footer(
+                    text = 'Всего {} эмодзи'.format(len(emojis)),
+                    icon_url = client.user.avatar_url
+                )
+                embedlist.append(emojiembed)
+            if len(content) == 2:
+                if 'all' in content[1]:
+                    for i in range(len(embedlist)):
+                        await message.author.send(embed = embedlist[i])
+                elif 'count' in content[1]:
+                    count = len(client.emojis)
+                    await message.channel.send('У меня имеется {} эмодзи!'.format(count), delete_after = 20)
+                else:
+                    await message.channel.send('Используйте: *myemo ([all/count])', delete_after = 15)
+            else:
+                for i in range(len(embedlist)):
+                    await message.author.send(embed = embedlist[i])
+
+    if msglower.startswith(pref+'say'):
+        if message.author.guild_permissions.administrator or message.author.id == 400231667408699392:
+            await message.delete()
+            msg = message.content.split(' ', 1)
+            myemojis = client.emojis
+            try:
+                for e in myemojis:
+                    if e.name in msg[1]:
+                        try:
+                            check = re.search(r'<:' + e.name + r':\d*>', msg[1])
+                            check = check.group(0)
+                            check = check[1:]
+                        except:
+                            msg[1] = msg[1].replace(':{}:'.format(e.name), str(e))
+            except:
+                await message.channel.send('Используйте: *say [message]', delete_after = 15)
+                return
+
+            await message.channel.send(msg[1])
+
+    if msglower.startswith(pref+'inv') or msglower.startswith(pref+'invite'):
+
+        if message.author.id == 400231667408699392:
+
+            await message.delete()
+
+            invme = discord.Embed(description = '**Пригласи меня на свой сервер :B**\nhttps://discordapp.com/oauth2/authorize?&client_id=583618052285923351&scope=bot&permissions=8', color = discord.Color.blue())
+
+            await message.author.send(embed = invme)
+
+@client.event
+async def on_reaction_add(reaction, user):
+
+    if user == client.user:
+        return
+
+    if str(reaction.emoji) == '🚩' and user.id == 400231667408699392:
+        await reaction.message.delete()
 
 
 
